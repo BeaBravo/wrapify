@@ -5,68 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
-    />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet" />
+    <link href="./assets/css/style.css" rel="stylesheet" />
 
     <title>Wrapify</title>
   </head>
   <body>
-    <main>
-      <div class="row">
-        <form id="input-form">
-          <!-- do you have a product in mind? yes/no -->
-          <div class="input-field col s12">
-            <select>
-              <option value="" disabled selected>
-                Do you have a product in mind?
-              </option>
+    <header class="teal white-text left-align">
+      <!-- <div class="row"> -->
+      <h1 class="page-header-title">WRAPIFY</h1>
+      <!-- </div> -->
+    </header>
+
+    <main class="container custom-container">
+      <form id="input-form" class="custom-form">
+        <!-- do you have a product in mind? yes/no -->
+        <div class="row">
+          <div class="col s8 input-field custom-input">
+            <select class="custom-select">
+              <option value="" selected>Do you have a product in mind?</option>
               <option value="1">yes</option>
               <option value="2">no</option>
             </select>
-            <label>Materialize Select</label>
           </div>
-          <!-- input the URL -->
+        </div>
+        <!-- input the URL -->
 
-          <div class="row">
-            <div class="input-field col s12">
-              <input id="product-url" type="url" class="validate" pattern="https://www.amazon.com/*">
-              <label for="product-url">Paste your url here:</label>
+        <div class="row">
+          <div class="input-field col s12">
+            <input
+              id="product-url"
+              type="url"
+              class="validate"
+              pattern="https://www.amazon.com/*" />
+            <label class="custom-label" for="product-url"
+              >Paste your url here:</label
+            >
+          </div>
+        </div>
+
+        <!-- price range -->
+        <div class="row">
+          <label class="range-field custom-label"
+            >Price range <input type="range" id="price-range" min="0" max="200"
+          /></label>
+        </div>
+
+        <!-- Prime delivery option -->
+        <div class="row">
+          <p>
+            <label class="custom-label">
+              <input type="checkbox" id="prime-delivery" />
+              <span>Prime delivery avaiable</span>
+            </label>
+          </p>
+        </div>
+
+        <!-- select categories -->
+        <div class="row">
+          <div class="input-field col s8">
+            <select id="product-categories">
+              <option value="" disabled selected>Select one category</option>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label class="custom-label">Categories</label>
+          </div>
+        </div>
+        <!-- Search word keys -->
+        <div class="row">
+          <div class="col s8">
+            <label class="custom-label"
+              >give us your ideas by typing search key words</label
+            >
+            <div class="chips" id="search-words">
+              <input class="search-words" />
             </div>
-            <div class="row w-80">
-                <label class="range-field">
-                <input type="range" id="price-range" min="0" max="100" />
-                </label>
-            </div>
-            <p>
-                <label>
-                  <input type="checkbox" id="prime-delivery"/>
-                  <span>Prime delivery</span>
-                </label>
-              </p>
-                        <!-- select categories -->
-              <div class="row">
-                <div class="input-field col s8">
-                    <select multiple id="product-categories">
-                      <option value="" disabled selected>Choose at least one category</option>
-                      <option value="1">Option 1</option>
-                      <option value="2">Option 2</option>
-                      <option value="3">Option 3</option>
-                    </select>
-                    <label>Categories</label>
-                </div>
-              
-              </div>  
-              <div class="chips" id="search-words">
-                <input class="search-words">
-              </div>
+          </div>
+        </div>
 
-
-              <label for="search-button">
-                <button class='btn' type='submit' id='search-button'>Find me ideas</button>
-              </label>
-        </form>
-      </div>
+        <!-- Search button -->
+        <div class="row">
+          <label for="search-button">
+            <button class="btn" type="submit" id="search-button">
+              Find me ideas
+            </button>
+          </label>
+        </div>
+      </form>
     </main>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
