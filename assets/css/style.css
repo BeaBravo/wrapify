@@ -82,3 +82,7 @@ body {
   padding: 0.5rem !important;
   text-align: center;
 }
+
+.sentiment-value span {
+  font-size: 46px;
+}
