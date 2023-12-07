@@ -12,12 +12,11 @@ var reviewsData = [];
       })
       .then(function (data) {
        
-
-        for (var i = 0; i < data.top_reviews.length; i++) {
+        for (var i = 0; i < data.product.top_reviews.length; i++) {
             var review = {
-                body: top_reviews[i].body,
-                rating: top_reviews[i].rating,
-                isGlobal: top_reviews[i].is_global_review
+                body: data.top_reviews[i].body,
+                rating: data.top_reviews[i].rating,
+                isGlobal: data.top_reviews[i].is_global_review
             };
             
             reviewsData.push(review);
@@ -44,4 +43,7 @@ var reviewsData = [];
         console.log(result);
     } catch (error) {
         console.error(error);
+
+
+        
     }
