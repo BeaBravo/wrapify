@@ -23,5 +23,25 @@ var reviewsData = [];
             reviewsData.push(review);
         }
         })
-     
-    fetch(sentimentURL)
+    
+    for (var i = 0; i < reviewsData.length; i++) {
+    fconst url = 'https://twinword-sentiment-analysis.p.rapidapi.com/analyze/';
+    const options = {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'X-RapidAPI-Key': 'SIGN-UP-FOR-KEY',
+            'X-RapidAPI-Host': 'twinword-sentiment-analysis.p.rapidapi.com'
+        },
+        body: new URLSearchParams({
+            text: reviewsData[i].body
+        })
+    };
+    
+    try {
+        const response = await fetch(url, options);
+        const result = await response.text();
+        console.log(result);
+    } catch (error) {
+        console.error(error);
+    }
