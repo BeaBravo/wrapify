@@ -37,13 +37,3 @@ body {
   border: 2px solid red;
   height: 80vh;
 }
-
-.custom-card {
-  padding: 0.5rem;
-  margin: 1rem;
-  background-color: var(--border-color);
-}
-
-.custom-card-content {
-  color: var(--background-color);
-}
