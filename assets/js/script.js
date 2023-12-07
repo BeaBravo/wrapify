@@ -1,3 +1,6 @@
+const apiKey = "D961BC3F959A416CB66BA38ED853CB39";
+const baseURL = `https://api.rainforestapi.com/request?api_key=${apiKey}`;
+
 document.addEventListener("DOMContentLoaded", function () {
   var elems = document.querySelectorAll("select");
   var instances = M.FormSelect.init(elems, {});
@@ -14,57 +17,24 @@ var keywords = new Set();
 document.addEventListener("DOMContentLoaded", function () {
   
   var elems = document.querySelectorAll(".chips");
-  var chipInput = document.querySelectorAll(".search-words");
+
+  function sanitizeTag(tag) {
+    return tag.replace(/\s/g, '%20').trim().toLowerCase();
+  }
 
   var instances = M.Chips.init(elems, {
-    onChipAdd: function (elem, somethingElse) {
-        var instance = M.Chips.getInstance(0);
-        var tags = instances[0].chipsData.map(function(chip){
-          // Replace white space with escaped '%20'
-          var updatedTag = chip.tag.replace(/\s/g, '%20');
-          keywords.add(updatedTag);
-        }).join('+');
+    onChipAdd: function(elem, addedChip) {
+      var addedChipTag = addedChip.textContent.replace('close', '');
+      console.log("Added a chip tag:", addedChipTag);
+      keywords.add(sanitizeTag(addedChipTag));
     },
+    onChipDelete: function(elem, deletedChip) {
+      var deletedChipTag = deletedChip.textContent.replace('close', '');
+      console.log(`Deleted a chip tag: ${deletedChipTag}`);
+      keywords.delete(sanitizeTag(deletedChipTag));
+    }
   });
 });
-
-const categoryIDs = {
-  amazonfresh: "amazonfresh",
-  amazoninstantvideo: 2858778011,
-  appliances: 2619526011,
-  appsandgames: 2350150011,
-  artscraftssewing: 2617942011,
-  audible: "audible",
-  automotive: 15690151,
-  baby: 165797011,
-  beauty: 11055981,
-  books: 1000,
-  cdsandvinyl: 301668,
-  cellphonesandaccessories: 2335753011,
-  clothingshoesandjewelery: 7141124011,
-  collectiblesandfinearts: 4991426011,
-  digitalmusic: 624868011,
-  electronics: 493964,
-  giftcards: 2864120011,
-  grocerandgourmetfood: 16310211,
-  handmade: 11260433011,
-  healthandpersonalcare: 3760931,
-  homeandkitchen: 1063498,
-  industrialandscientific: 16310161,
-  kindlestore: 133141011,
-  magazinesubscriptions: 599872,
-  moviesandtv: 2625374011,
-  musicalinstruments: 11965861,
-  officeproducts: 1084128,
-  patiolawnandgarden: 3238155011,
-  petsupplies: 2619534011,
-  software: 409488,
-  sportsandoutdoors: 3375301,
-  toolsandhomeimprovement: 468240,
-  toysandgames: 165795011,
-  vehicles: 10677470011,
-  videogames: 11846801,
-}
 
 // returns the selected category's specific amazon category id
 // appended to our query by: category_id=getCategories()
