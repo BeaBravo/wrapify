@@ -33,9 +33,13 @@ body {
   color: var(--text-color) !important;
 }
 
+/* -------------------------------------------------------- */
+/* ------ This is the styling for the results page ------- */
+/* ------------------------------------------------------ */
 .custom-section {
-  border: 2px solid red;
-  height: 80vh;
+  height: auto;
+  padding: 1rem;
+  background-color: var(--background-color);
 }
 
 .custom-card {
@@ -46,4 +50,35 @@ body {
 
 .custom-card-content {
   color: var(--background-color);
+  font-size: larger;
+}
+
+.custom-card h5 {
+  color: var(--background-color);
+  font-weight: bolder;
+}
+
+.responsive-image img {
+  width: 100%;
+  height: auto;
+}
+
+#buy-now-button {
+  background-color: var(--background-color);
+}
+
+.custom-info {
+  margin-top: 2rem;
+}
+
+.custom-info p {
+  margin: 0;
+}
+
+.sentiment-value {
+  border: 3px solid var(--background-color);
+  border-radius: 10%;
+  font-family: "Material Icon";
+  padding: 0.5rem !important;
+  text-align: center;
 }
