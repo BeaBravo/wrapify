@@ -1,33 +1,32 @@
-var queryURL =
-  "https://api.rainforestapi.com/request?api_key=D961BC3F959A416CB66BA38ED853CB39&type=search&amazon_domain=amazon.com&search_term=shoes+boots+sneakers&category_id=7141124011";
+//testData was defined in test-search.js
 
-//AMAZON API ------------ Neil's script--------//
-// fetch(queryURL)
-//   .then(function (response) {
-//     return response.json();
-//   })
-//   .then(function (data) {
-//     for (var i = 0; i < data.top_reviews.length; i++) {
-//       var review = {
-//         body: data.top_reviews[i].body,
-//         rating: data.top_reviews[i].rating,
-//         isGlobal: data.top_reviews[i].is_global_review,
-//       };
-//     }
+var results = testData.search_results;
 
-//     var productInfo = {
-//       productDescription: data.product.description,
-//       productImage: data.product.main_image.link,
-//     };
-//     reviewsData.push(review);
-//   });
-//AMAZON API ------------ Neil's script--------//
-//--------------------------------------------//
+//we want to render the top 5 results
 
-fetch(queryURL)
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    console.log(data);
-  });
+var topFiveResults = [
+  results[0],
+  results[1],
+  results[2],
+  results[3],
+  results[4],
+];
+
+// console.log(topFiveResults);
+
+function displayResults() {
+  //we want to display: title, description, price, prime delivery, image, rating, and sentiment analysis, link to buy now//
+  //build a for loop to make new objects for this data
+  var i = 0;
+  var result = topFiveResults[i];
+  var title = result.title;
+  var price = result.price.raw; //will show the price as a string
+  var primeDelivery = result.is_prime; //this is a boolean property
+  var image = result.image;
+  var rating = result.rating; //this is a number
+  var link = result.link;
+  //description=result.description
+  //sentiment=result.sentiment
+
+  //display using innerHTML('')
+}
