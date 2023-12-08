@@ -1,0 +1,158 @@
+:root {
+  --background-color: #9a275a;
+  --text-color: #e2c6c2;
+  --border-color: #cb958e;
+  --selection-color: #e2bfba;
+}
+
+body {
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial,
+    sans-serif;
+  background-color: var(--selection-color);
+}
+
+.page-header-title {
+  margin-top: 0;
+  margin-left: 2rem;
+  color: rgb(229, 216, 216);
+}
+
+.custom-select option {
+  text-align: left;
+}
+
+.custom-container {
+  padding: 1rem;
+  border: 5px var(--border-color) solid;
+  background-color: white;
+}
+
+/* slider colors and the thumb */
+
+input[type="range"]::-webkit-slider-thumb {
+  background-color: var(--background-color);
+}
+input[type="range"]::-moz-range-thumb {
+  background-color: var(--background-color);
+}
+input[type="range"]::-ms-thumb {
+  background-color: var(--background-color);
+}
+
+input[type="range"] + .thumb {
+  background-color: var(--background-color);
+}
+
+/* Style for check mark color */
+[type="checkbox"]:checked + span:not(.lever):before {
+  border-right: 2px solid var(--background-color);
+  border-bottom: 2px solid var(--background-color);
+}
+/* This is for the font color of the dropdowns */
+ul.dropdown-content.select-dropdown li span {
+  color: #000;
+}
+
+/* this is for the font size and color of the <label> text */
+.custom-label {
+  font-size: 1rem;
+  color: black !important;
+}
+
+/* style for the keyboards border line */
+.chips.focus {
+  border-bottom: 1px solid var(--background-color);
+  -webkit-box-shadow: 0 1px 0 0 var(--background-color);
+  box-shadow: 0 1px 0 0 var(--background-color);
+}
+
+/* style input border line */
+input:not([type]):focus:not([readonly]),
+input[type="text"]:not(.browser-default):focus:not([readonly]),
+input[type="password"]:not(.browser-default):focus:not([readonly]),
+input[type="email"]:not(.browser-default):focus:not([readonly]),
+input[type="url"]:not(.browser-default):focus:not([readonly]),
+input[type="time"]:not(.browser-default):focus:not([readonly]),
+input[type="date"]:not(.browser-default):focus:not([readonly]),
+input[type="datetime"]:not(.browser-default):focus:not([readonly]),
+input[type="datetime-local"]:not(.browser-default):focus:not([readonly]),
+input[type="tel"]:not(.browser-default):focus:not([readonly]),
+input[type="number"]:not(.browser-default):focus:not([readonly]),
+input[type="search"]:not(.browser-default):focus:not([readonly]),
+textarea.materialize-textarea:focus:not([readonly]) {
+  border-bottom: 1px solid var(--background-color);
+  -webkit-box-shadow: 0 1px 0 0 var(--background-color);
+  box-shadow: 0 1px 0 0 var(--background-color);
+}
+
+.select-wrapper input.select-dropdown:focus {
+  border-bottom: 1px solid var(--background-color);
+}
+
+/* save button style */
+#search-button {
+  background-color: var(--background-color);
+}
+
+/* -------------------------------------------------------- */
+/* ------ This is the styling for the results page ------- */
+/* ------------------------------------------------------ */
+.custom-section {
+  height: auto;
+  padding: 1rem;
+  background-color: var(--background-color);
+}
+
+.custom-card {
+  padding: 0.5rem;
+  margin: 1rem;
+  background-color: var(--selection-color);
+  border-radius: 10px;
+}
+
+.custom-card-content {
+  color: var(--background-color);
+  font-size: larger;
+}
+
+.custom-card h5 {
+  color: var(--background-color);
+  font-weight: bolder;
+}
+
+.responsive-image img {
+  width: 100%;
+  height: auto;
+}
+
+#buy-now-button {
+  background-color: var(--background-color);
+}
+
+.custom-info {
+  margin-top: 2rem;
+}
+
+.custom-info p {
+  margin: 0;
+}
+
+.sentiment-value {
+  border: 3px solid var(--background-color);
+  border-radius: 10%;
+  font-family: "Material Icon";
+  padding: 0.5rem !important;
+  text-align: center;
+}
+
+.sentiment-value span {
+  font-size: 46px;
+}
+
+@media screen and (min-width: 925px) {
+  /* for screens 925px and larger the projects won't take 100% of the section  */
+  .custom-container {
+    width: 70vh;
+  }
+}

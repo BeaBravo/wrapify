@@ -1,0 +1,39 @@
+:root {
+  --background-color: #9a275a;
+  --text-color: #e2c6c2;
+  --border-color: #cb958e;
+  --selection-color: #e2bfba;
+}
+
+body {
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+.page-header-title {
+  margin-top: 0;
+  margin-left: 2rem;
+}
+
+.custom-select option {
+  text-align: left;
+}
+
+.custom-container {
+  padding: 1rem;
+  /* margin-top: 2rem; */
+  width: 60vh;
+  border: 5px var(--border-color) solid;
+  /* background-color: var(--border-color); */
+}
+
+.custom-label {
+  font-size: 1rem;
+  color: var(--text-color) !important;
+}
+
+.custom-section {
+  border: 2px solid red;
+  height: 80vh;
+}
