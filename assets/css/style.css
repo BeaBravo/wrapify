@@ -9,11 +9,13 @@ body {
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial,
     sans-serif;
+  background-color: var(--background-color);
 }
 
 .page-header-title {
   margin-top: 0;
   margin-left: 2rem;
+  color: rgb(229, 216, 216);
 }
 
 .custom-select option {
@@ -22,15 +24,13 @@ body {
 
 .custom-container {
   padding: 1rem;
-  /* margin-top: 2rem; */
-  width: 60vh;
   border: 5px var(--border-color) solid;
-  /* background-color: var(--border-color); */
+  background-color: white;
 }
 
 .custom-label {
   font-size: 1rem;
-  color: var(--text-color) !important;
+  color: black !important;
 }
 
 /* -------------------------------------------------------- */
@@ -85,4 +85,11 @@ body {
 
 .sentiment-value span {
   font-size: 46px;
+}
+
+@media screen and (min-width: 925px) {
+  /* for screens 925px and larger the projects won't take 100% of the section  */
+  .custom-container {
+    width: 70vh;
+  }
 }
