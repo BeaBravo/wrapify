@@ -1,16 +1,19 @@
 const apiKey = "D961BC3F959A416CB66BA38ED853CB39";
 const baseURL = `https://api.rainforestapi.com/request?api_key=${apiKey}&type=search&amazon_domain=amazon.com`;
 
+// Initialize our select menus
 document.addEventListener("DOMContentLoaded", function () {
   var elems = document.querySelectorAll("select");
   var instances = M.FormSelect.init(elems, {});
 });
 
 
+// Returns the price range from the slider 
 function getPriceRange() {
-  return document.getElementById("price-range").value();
+  return document.getElementById("price-range").value;
 }
 
+// Returns boolean of whether the 'isPrime' checkbox is checked or not
 function isPrimeDelivery() {
   return document.getElementById("prime-delivery").checked;
 }
@@ -75,7 +78,7 @@ document.getElementById('search-button').addEventListener('click', function(even
     is_prime: isPrimeDelivery(),
     price_range: getPriceRange()
   }
-
+  
   return queryObject;
 
 });
