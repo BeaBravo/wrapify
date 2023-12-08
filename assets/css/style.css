@@ -9,7 +9,7 @@ body {
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial,
     sans-serif;
-  background-color: var(--border-color);
+  background-color: var(--selection-color);
 }
 
 .page-header-title {
@@ -107,7 +107,8 @@ textarea.materialize-textarea:focus:not([readonly]) {
 .custom-card {
   padding: 0.5rem;
   margin: 1rem;
-  background-color: var(--border-color);
+  background-color: var(--selection-color);
+  border-radius: 10px;
 }
 
 .custom-card-content {
