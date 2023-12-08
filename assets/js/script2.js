@@ -18,7 +18,7 @@ fetch(queryURL)
       isGlobal: data.top_reviews[i].is_global_review
     };
     }
-    
+
     var productInfo = {
         productDescription: data.product.description,
         productImage: data.product.main_image.link
@@ -28,7 +28,7 @@ fetch(queryURL)
 });
 
     
-    //SENTIMENT API
+//SENTIMENT API
     for (var i = 0; i < reviewsData.length; i++) {
         const url = 'https://twinword-sentiment-analysis.p.rapidapi.com/analyze/';
         const options = {
