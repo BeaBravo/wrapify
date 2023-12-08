@@ -1,5 +1,5 @@
-const apiKey = "D961BC3F959A416CB66BA38ED853CB39";
-const baseURL = `https://api.rainforestapi.com/request?api_key=${apiKey}&type=search&amazon_domain=amazon.com`;
+const rainForestApiKey = "D961BC3F959A416CB66BA38ED853CB39";
+const baseURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=search&amazon_domain=amazon.com`;
 
 // Initialize our select menus
 document.addEventListener("DOMContentLoaded", function () {
