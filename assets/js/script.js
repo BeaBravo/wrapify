@@ -6,13 +6,16 @@ const baseListingURL = `https://api.rainforestapi.com/request?api_key=${rainFore
 // The below API endpoint is used for viewing an individual product listing
 const baseProductURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=product&amazon_domain=`;
 
+// Destructure the array containing our two <select> tags. This will break if the number of selects were to change!
+const [productSelect, categorySelect] = document.querySelectorAll("select");
+
+
 /*
 Returns a boolean (true / false) for whether or not they have a product in mind to use as
 inspiration. The user is expected to drop a URL into the form below 'paste you url here'
 */
 function doesUserHaveProductInMind() {
-  var e = document.querySelectorAll("select")[0];
-  return (e.options[e.selectedIndex].value === "1");
+  return (productSelect.options[productSelect.selectedIndex].value === "1");
 }
 
 /*
@@ -22,13 +25,6 @@ select.
 function getInMindProductUrl() {
   return document.getElementById("product-url");
 }
-
-// Initialize our select menus
-document.addEventListener("DOMContentLoaded", function () {
-  var elems = document.querySelectorAll("select");
-  var instances = M.FormSelect.init(elems, {});
-});
-
 
 // Returns the price range from the slider 
 function getPriceRange() {
@@ -56,7 +52,10 @@ function getCategory() {
 // the user
 var keywords = new Set();
 document.addEventListener("DOMContentLoaded", function () {
-  
+  // Initialize our select menus
+  var instances = M.FormSelect.init(document.querySelectorAll('select'), {});
+
+
   var elems = document.querySelectorAll(".chips");
 
   function sanitizeTag(tag) {
@@ -100,7 +99,8 @@ document.getElementById('search-button').addEventListener('click', function(even
     is_prime: isPrimeDelivery(),
     price_range: getPriceRange()
   }
-  console.log(getInMindProductUrl());
+  //console.log(getInMindProductUrl());
+  console.log(doesUserHaveProductInMind());
   return queryObject;
 
 });
