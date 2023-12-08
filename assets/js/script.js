@@ -6,6 +6,11 @@ document.addEventListener("DOMContentLoaded", function () {
   var instances = M.FormSelect.init(elems, {});
 });
 
+
+function getPriceRange() {
+  return document.getElementById("price-range").value();
+}
+
 function isPrimeDelivery() {
   return document.getElementById("prime-delivery").checked;
 }
@@ -65,8 +70,12 @@ function createQuery() {
 // The submit button
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
-  console.log("keyword chips are: ", keywords);
-  createQuery();
-  console.log('prime delivery:>',   isPrimeDelivery());
+  var queryObject = {
+    url: createQuery(),
+    is_prime: isPrimeDelivery(),
+    price_range: getPriceRange()
+  }
+
+  return queryObject;
 
 });
