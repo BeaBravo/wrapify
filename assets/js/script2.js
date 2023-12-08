@@ -11,14 +11,20 @@ fetch(queryURL)
   return response.json();
 })
 .then(function (data) {
-  for (var i = 0; i < data.product.top_reviews.length; i++) {
+  for (var i = 0; i < data.top_reviews.length; i++) {
     var review = {
-      body: data.product.top_reviews[i].body,
-      rating: data.product.top_reviews[i].rating,
-      isGlobal: data.product.top_reviews[i].is_global_review
+      body: data.top_reviews[i].body,
+      rating: data.top_reviews[i].rating,
+      isGlobal: data.top_reviews[i].is_global_review
     };
+    }
+    
+    var productInfo = {
+        productDescription: data.product.description,
+        productImage: data.product.main_image.link
+      };
     reviewsData.push(review);
-  }
+
 });
 
     
@@ -29,7 +35,7 @@ fetch(queryURL)
           method: 'POST',
           headers: {
             'content-type': 'application/x-www-form-urlencoded',
-            'X-RapidAPI-Key': 'YOUR-RAPIDAPI-KEY', // Replace with your actual RapidAPI key
+            'X-RapidAPI-Key': '1KwrcA8BB0EQ/eJfwXBRYANbatZXsCxMnN+8Zvg2fcb9AHYnA8JiYqdb1uYq1R7uujUJ7q6a/Mj/mhvMnFg6BQ==', // Replace with your actual RapidAPI key
             'X-RapidAPI-Host': 'twinword-sentiment-analysis.p.rapidapi.com'
           },
           body: new URLSearchParams({
