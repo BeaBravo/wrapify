@@ -9,7 +9,7 @@ body {
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial,
     sans-serif;
-  background-color: var(--background-color);
+  background-color: var(--border-color);
 }
 
 .page-header-title {
@@ -28,9 +28,71 @@ body {
   background-color: white;
 }
 
+/* slider colors and the thumb */
+
+input[type="range"]::-webkit-slider-thumb {
+  background-color: var(--background-color);
+}
+input[type="range"]::-moz-range-thumb {
+  background-color: var(--background-color);
+}
+input[type="range"]::-ms-thumb {
+  background-color: var(--background-color);
+}
+
+input[type="range"] + .thumb {
+  background-color: var(--background-color);
+}
+
+/* Style for check mark color */
+[type="checkbox"]:checked + span:not(.lever):before {
+  border-right: 2px solid var(--background-color);
+  border-bottom: 2px solid var(--background-color);
+}
+/* This is for the font color of the dropdowns */
+ul.dropdown-content.select-dropdown li span {
+  color: #000;
+}
+
+/* this is for the font size and color of the <label> text */
 .custom-label {
   font-size: 1rem;
   color: black !important;
+}
+
+/* style for the keyboards border line */
+.chips.focus {
+  border-bottom: 1px solid var(--background-color);
+  -webkit-box-shadow: 0 1px 0 0 var(--background-color);
+  box-shadow: 0 1px 0 0 var(--background-color);
+}
+
+/* style input border line */
+input:not([type]):focus:not([readonly]),
+input[type="text"]:not(.browser-default):focus:not([readonly]),
+input[type="password"]:not(.browser-default):focus:not([readonly]),
+input[type="email"]:not(.browser-default):focus:not([readonly]),
+input[type="url"]:not(.browser-default):focus:not([readonly]),
+input[type="time"]:not(.browser-default):focus:not([readonly]),
+input[type="date"]:not(.browser-default):focus:not([readonly]),
+input[type="datetime"]:not(.browser-default):focus:not([readonly]),
+input[type="datetime-local"]:not(.browser-default):focus:not([readonly]),
+input[type="tel"]:not(.browser-default):focus:not([readonly]),
+input[type="number"]:not(.browser-default):focus:not([readonly]),
+input[type="search"]:not(.browser-default):focus:not([readonly]),
+textarea.materialize-textarea:focus:not([readonly]) {
+  border-bottom: 1px solid var(--background-color);
+  -webkit-box-shadow: 0 1px 0 0 var(--background-color);
+  box-shadow: 0 1px 0 0 var(--background-color);
+}
+
+.select-wrapper input.select-dropdown:focus {
+  border-bottom: 1px solid var(--background-color);
+}
+
+/* save button style */
+#search-button {
+  background-color: var(--background-color);
 }
 
 /* -------------------------------------------------------- */
