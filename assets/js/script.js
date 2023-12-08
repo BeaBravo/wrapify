@@ -1,5 +1,27 @@
 const rainForestApiKey = "D961BC3F959A416CB66BA38ED853CB39";
-const baseURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=search&amazon_domain=amazon.com`;
+
+// The below API endpoint is used for acquiring an amazon search listing of products
+const baseListingURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=search&amazon_domain=amazon.com`;
+
+// The below API endpoint is used for viewing an individual product listing
+const baseProductURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=product&amazon_domain=`;
+
+/*
+Returns a boolean (true / false) for whether or not they have a product in mind to use as
+inspiration. The user is expected to drop a URL into the form below 'paste you url here'
+*/
+function doesUserHaveProductInMind() {
+  var e = document.querySelectorAll("select")[0];
+  return (e.options[e.selectedIndex].value === "1");
+}
+
+/*
+Returns the url string if the user has selected 'yes' to the do they have a product in mind
+select. 
+*/
+function getInMindProductUrl() {
+  return document.getElementById("product-url");
+}
 
 // Initialize our select menus
 document.addEventListener("DOMContentLoaded", function () {
@@ -13,7 +35,7 @@ function getPriceRange() {
   return document.getElementById("price-range").value;
 }
 
-// Returns boolean of whether the 'isPrime' checkbox is checked or not
+// Returns boolean of whether the 'Prime delivery available' checkbox is checked or not
 function isPrimeDelivery() {
   return document.getElementById("prime-delivery").checked;
 }
@@ -56,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function createQuery() {
-  let queryURL = baseURL;
+  let queryURL = baseListingURL;
 
   if (keywords.size) {
     queryURL += `&search_term=${Array.from(keywords).join('+')}`
@@ -78,7 +100,7 @@ document.getElementById('search-button').addEventListener('click', function(even
     is_prime: isPrimeDelivery(),
     price_range: getPriceRange()
   }
-  
+  console.log(getInMindProductUrl());
   return queryObject;
 
 });
