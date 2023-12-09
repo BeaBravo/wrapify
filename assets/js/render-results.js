@@ -47,7 +47,7 @@ function displayResults() {
         '<div class="custom-card-content col s12 m8 l8">' +
         '<div class="row">' +
         '<div class="col s12">' +
-        description +
+        // description +
         "</div></div>" +
         '<div class="row custom info"><div class="col s6 m2 l2">Price: ' +
         price +
