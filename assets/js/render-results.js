@@ -80,11 +80,11 @@ function starsRating(string, times) {
 function sentimentRender(sentiment) {
   if (sentiment === "positive") {
     sentimentDiv =
-      '<div class="col s4 m4 l4 sentiment-value"><span class="material-icons">sentiment_very_satisfied</span><p>This product is greatly reviewed</p></div>';
+      '<div class="col s12 m4 l4 sentiment-value"><span class="material-icons">sentiment_very_satisfied</span><p>This product is greatly reviewed</p></div>';
     return sentimentDiv;
   } else {
     sentimentDiv =
-      '<div class="col s4 m4 l4 sentiment-value"><span class="material-icons">sentiment_very_dissatisfied</span><p>This product is badly reviewed</p></div>';
+      '<div class="col s12 m4 l4 sentiment-value"><span class="material-icons">sentiment_very_dissatisfied</span><p>This product is badly reviewed</p></div>';
     return sentimentDiv;
   }
 }
