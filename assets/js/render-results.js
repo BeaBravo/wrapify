@@ -28,11 +28,14 @@ function displayResults() {
     var image = result.image;
     var rating = result.rating; //this is a number
     var link = result.link;
+    var stars = starsRating("star ", rating);
+
     //description=result.description
     //sentiment=result.sentiment
     var description =
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, blanditiis magnam ab aliquam quia ipsa laborum quis eius, deleniti animi ipsum, eligendi iure porro minus quos mollitia doloribus in quas.";
     var sentiment = "positive";
+    var sentimentDiv = sentimentRender(sentiment);
     //display
 
     resultEl.append(
@@ -48,9 +51,11 @@ function displayResults() {
         "</div></div>" +
         '<div class="row custom info"><div class="col s6 m2 l2">Price: ' +
         price +
-        '</div><div class="col s6 m5 l5">Rating: ' +
-        rating +
+        '</div><div class="col s6 m5 l5">Rating: <span class="material-icons">' +
+        stars +
+        "</span>" +
         "</div>" +
+        sentimentDiv +
         "</div>" +
         '<div class="col s12"><a class="btn-small waves-effect waves-light right" id="buy-now-button" href=' +
         link +
@@ -61,3 +66,25 @@ function displayResults() {
 }
 
 displayResults();
+
+function starsRating(string, times) {
+  if (times - Math.floor(times) >= 0.5) {
+    string += string.repeat(times - 1) + "star_half";
+    return string;
+  } else {
+    string += string.repeat(times - 1);
+    return string;
+  }
+}
+
+function sentimentRender(sentiment) {
+  if (sentiment === "positive") {
+    sentimentDiv =
+      '<div class="col s4 m4 l4 sentiment-value"><span class="material-icons">sentiment_very_satisfied</span><p>This product is greatly reviewed</p></div>';
+    return sentimentDiv;
+  } else {
+    sentimentDiv =
+      '<div class="col s4 m4 l4 sentiment-value"><span class="material-icons">sentiment_very_dissatisfied</span><p>This product is badly reviewed</p></div>';
+    return sentimentDiv;
+  }
+}
