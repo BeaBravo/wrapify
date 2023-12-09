@@ -164,7 +164,6 @@ async function passSearchQueryToCallback(callback) {
   }
 }
 
-
 // The submit button
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
