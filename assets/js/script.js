@@ -1,10 +1,13 @@
+// CHANGE THIS VARIABLE TO TRUE ONLY WHEN API IS TO BE USED
+const useAPI = false;
+
 const rainForestApiKey = "D961BC3F959A416CB66BA38ED853CB39";
 
 // The below API endpoint is used for acquiring an amazon search listing of products
 const baseListingURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=search&amazon_domain=amazon.com`;
 
 // The below API endpoint is used for viewing an individual product listing
-const baseProductURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=product&amazon_domain=`;
+const baseProductURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=product`;
 
 // Destructure the array containing our two <select> tags. This will break if the number of selects were to change!
 const [productSelect, categorySelect] = document.querySelectorAll("select");
@@ -13,7 +16,7 @@ const [productSelect, categorySelect] = document.querySelectorAll("select");
 const urlPromptEl = document.getElementById("product-url");
 
 // Hide the url prompt upon first start
-hideUrlInput();
+toggleUrlInput();
 
 /*
 Returns a boolean (true / false) for whether or not they have a product in mind to use as
@@ -24,23 +27,19 @@ function doesUserHaveProductInMind() {
 }
 
 // Display the url prompt when the user has selected "yes" they do have a product in mind
-function displayUrlInput() {
-  urlPromptEl.parentElement.style.display = "block";
-}
-
 // Hide the url prompt when the user has selected "no" they don't have a product in mind
-function hideUrlInput() {
-  urlPromptEl.parentElement.style.display = "none";
+function toggleUrlInput() {
+  if (doesUserHaveProductInMind()) {
+    urlPromptEl.parentElement.style.display = "block";
+  } else {
+    urlPromptEl.parentElement.style.display = "none";
+  }
 }
 
 // Hide/display the url prompt whenever the select element for "a product in mind" has been
 // selected
 productSelect.addEventListener("change", function(event) {
-  if (doesUserHaveProductInMind()) {
-    displayUrlInput();
-  } else {
-    hideUrlInput();
-  }
+  toggleUrlInput();
 })
 
 /*
@@ -100,32 +99,59 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-function createQuery() {
+/*
+  Using the parameters provided, create a product listing query for the rainforest
+  API
+*/
+function buildQueryUrl(keywords, category) {
   let queryURL = baseListingURL;
-
   if (keywords.size) {
     queryURL += `&search_term=${Array.from(keywords).join('+')}`
   }
-
   var categoryId = getCategory();
   if (categoryId) {
     queryURL += `&category_id=${categoryId}`;
   }
-  console.log("Query URL constructed: ", queryURL);
-  return queryURL;
+  console.log("Product listing query URL constructed: ", queryURL);
+  return queryURL; 
+}
+
+/*
+  Build a product search query url from the parameters selected by the user.
+  *if* a product url was provided, we use the product category, keywords, etc.
+  from that product as defaults.
+*/
+function getQueryUrl() {
+
+  var queryKeywords, categoryId;
+
+
+  if (doesUserHaveProductInMind && useAPI) {
+    var queryUrl = `${baseProductURL}&url=${getInMindProductUrl()}`;
+    
+    fetch(queryUrl)
+    .then(function(response) {
+      if (response.ok) {
+        return response.json();
+      }
+    })
+    .then(function(data) {
+      console.log("data from fetch request:");
+      console.log(data);
+    });
+  }
 }
 
 // The submit button
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
   var queryObject = {
-    url: createQuery(),
+    url: getQueryUrl(),
     is_prime: isPrimeDelivery(),
     price_range: getPriceRange()
   }
-  //console.log(getInMindProductUrl());
-  console.log(doesUserHaveProductInMind());
   return queryObject;
 
 });
+
 
