@@ -9,6 +9,11 @@ const baseProductURL = `https://api.rainforestapi.com/request?api_key=${rainFore
 // Destructure the array containing our two <select> tags. This will break if the number of selects were to change!
 const [productSelect, categorySelect] = document.querySelectorAll("select");
 
+// The product url input element
+const urlPromptEl = document.getElementById("product-url");
+
+// Hide the url prompt upon first start
+hideUrlInput();
 
 /*
 Returns a boolean (true / false) for whether or not they have a product in mind to use as
@@ -17,6 +22,26 @@ inspiration. The user is expected to drop a URL into the form below 'paste you u
 function doesUserHaveProductInMind() {
   return (productSelect.options[productSelect.selectedIndex].value === "1");
 }
+
+// Display the url prompt when the user has selected "yes" they do have a product in mind
+function displayUrlInput() {
+  urlPromptEl.parentElement.style.display = "block";
+}
+
+// Hide the url prompt when the user has selected "no" they don't have a product in mind
+function hideUrlInput() {
+  urlPromptEl.parentElement.style.display = "none";
+}
+
+// Hide/display the url prompt whenever the select element for "a product in mind" has been
+// selected
+productSelect.addEventListener("change", function(event) {
+  if (doesUserHaveProductInMind()) {
+    displayUrlInput();
+  } else {
+    hideUrlInput();
+  }
+})
 
 /*
 Returns the url string if the user has selected 'yes' to the do they have a product in mind
@@ -45,7 +70,7 @@ function getCategory() {
 }
 
 // Each chip tag will be added to our query in the `search_term` parameter
-// For example: 2chips with "memory cards" "64GB" will be appended to
+// For example: 2 chips with "memory cards" "64GB" will be appended to
 // our fetch request as &search_term=memory%20cards+64gb
 //
 // Each keyword is added to a global set which is constantly modified as
@@ -54,7 +79,6 @@ var keywords = new Set();
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize our select menus
   var instances = M.FormSelect.init(document.querySelectorAll('select'), {});
-
 
   var elems = document.querySelectorAll(".chips");
 
@@ -104,3 +128,4 @@ document.getElementById('search-button').addEventListener('click', function(even
   return queryObject;
 
 });
+
