@@ -120,13 +120,15 @@ function buildQueryUrl(keywords, category) {
   Build a product search query url from the parameters selected by the user.
   *if* a product url was provided, we use the product category, keywords, etc.
   from that product as defaults.
+
+  This product search query url is passed to a new fetch request that parses
+  data and performs sentiment analysis (script2.js)
 */
-function getQueryUrl() {
+async function passSearchQueryToCallback(callback) {
 
-  var queryKeywords, categoryId;
-
-
+  // Below will only run when API use is allowed
   if (doesUserHaveProductInMind && useAPI) {
+    console.log("User has a product in mind")
     var queryUrl = `${baseProductURL}&url=${getInMindProductUrl()}`;
     
     fetch(queryUrl)
@@ -136,22 +138,37 @@ function getQueryUrl() {
       }
     })
     .then(function(data) {
-      console.log("data from fetch request:");
+      console.log("Data from fetch request of the product in mind:");
       console.log(data);
+
+      var asin = data.product.asin;
+      var queryKeywords = data.product.keywords_list;
+      var queryCategory = data.product.categories[1].category_id;
+      var isPrime = data.product.buybox_winner.is_prime;
+      var price = data.product.buybox_winner.price-value;
+
+      if (!queryCategory) {
+        queryCategory = getCategory();
+      }
+
+      if (!isPrime) {
+        isPrime = isPrimeDelivery();
+      }
+
+      // A search query for a user with an inspired product:
+      buildQueryUrl(queryKeywords, queryCategory)
+
     });
+  } else {
+    callback(buildQueryUrl(keywords, getCategory()));
   }
 }
+
 
 // The submit button
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
-  var queryObject = {
-    url: getQueryUrl(),
-    is_prime: isPrimeDelivery(),
-    price_range: getPriceRange()
-  }
-  return queryObject;
 
+  // Temp empty callback function:
+  passSearchQueryToCallback(function(){});
 });
-
-
