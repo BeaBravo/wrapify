@@ -107,7 +107,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
 .custom-card {
   padding: 0.5rem;
   margin: 1rem;
-  background-color: var(--selection-color);
+  background-color: white;
   border-radius: 10px;
 }
 
@@ -139,15 +139,21 @@ textarea.materialize-textarea:focus:not([readonly]) {
 }
 
 .sentiment-value {
-  border: 3px solid var(--background-color);
+  border: 3px solid white;
   border-radius: 10%;
   font-family: "Material Icon";
   padding: 0.5rem !important;
   text-align: center;
+  background-color: rgb(176, 216, 155);
 }
 
 .sentiment-value span {
   font-size: 46px;
+  color: green;
+}
+.sentiment-value p {
+  margin-top: 0;
+  color: white;
 }
 
 @media screen and (min-width: 925px) {

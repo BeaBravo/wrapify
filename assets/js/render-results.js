@@ -41,17 +41,17 @@ function displayResults() {
     resultEl.append(
       '<div class="card row custom-card hoverable"><h5>' +
         title +
-        '</h5><div class="col s12 m4 l4 responsive-image"><img src=' +
+        '</h5><div class="col s12 m4 l4 responsive-image valign-wrapper"><img src=' +
         image +
         " /></div>" +
         '<div class="custom-card-content col s12 m8 l8">' +
         '<div class="row">' +
-        '<div class"col s12">' +
+        '<div class="col s12">' +
         description +
         "</div></div>" +
         '<div class="row custom info"><div class="col s6 m2 l2">Price: ' +
         price +
-        '</div><div class="col s6 m5 l5">Rating: <span class="material-icons">' +
+        '</div><div class="col s6 m5 l5"> <span class="material-icons">' +
         stars +
         "</span>" +
         "</div>" +
