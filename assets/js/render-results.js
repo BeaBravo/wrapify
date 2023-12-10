@@ -24,7 +24,7 @@ function displayResults(topFiveResults) {
     var result = topFiveResults[i];
     var title = result.title;
     var price = result.price.raw; //will show the price as a string
-    var primeDelivery = result.is_prime; //this is a boolean property
+    var primeDelivery = isPrime(result.is_prime); //this is a boolean property
     var image = result.image;
     var rating = result.rating; //this is a number
     var link = result.link;
@@ -52,6 +52,7 @@ function displayResults(topFiveResults) {
         "</div></div>" +
         '<div class="row custom info"><div class="col s6 m3 l3">Price: ' +
         price +
+        primeDelivery +
         '</div><div class="col s6 m5 l5"> <span class="material-icons">' +
         stars +
         "</span>" +
@@ -95,5 +96,15 @@ function sentimentRender(sentiment, sales) {
     sentimentDiv =
       '<div class="col s6 offset-s3 m4 l4 sentiment-value negative-sentiment"><span class="material-icons">sentiment_very_dissatisfied</span><p>We do not recommend this product</p></div>';
     return sentimentDiv;
+  }
+}
+
+function isPrime(prime) {
+  if (prime) {
+    primeDelivery = '<div class="row"><img class="prime-logo"/></div>';
+    return primeDelivery;
+  } else {
+    primeDelivery = "";
+    return primeDelivery;
   }
 }

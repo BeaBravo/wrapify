@@ -139,6 +139,11 @@ textarea.materialize-textarea:focus:not([readonly]) {
   margin: 0;
 }
 
+.prime-logo {
+  max-width: 100px;
+  content: url("https://m.media-amazon.com/images/G/51/prime/marketing/slashPrime/amazon-prime-delivery-checkmark._CB611037204_.png");
+}
+
 .sentiment-value {
   border: 3px solid white;
   border-radius: 10%;
