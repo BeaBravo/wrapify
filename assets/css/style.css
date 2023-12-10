@@ -174,9 +174,11 @@ textarea.materialize-textarea:focus:not([readonly]) {
 
 /* To add the rotated visual indicator for the user's choice */
 .rotate {
-  background-color: rgba(105, 174, 197, 1);
+  /* background-color: rgba(105, 174, 197, 1); */
+  background-color: #08415c;
   transform: rotate(-45deg) translateX(-50px) translateY(-62px);
-  color: rgb(22, 121, 158);
+  /* color: rgb(22, 121, 158); */
+  color: #92dce5;
   position: absolute;
   font-size: x-large;
   font-weight: bold;
