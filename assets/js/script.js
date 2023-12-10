@@ -144,8 +144,32 @@ function getSearchQueryURL() {
 
       var asin = data.product.asin;
       var queryKeywords = data.product.keywords_list;
-      // Get index -1 in the future because some products have only 1 category
-      var queryCategory = data.product.categories[1].category_id;
+
+      /* The below switch statement handles extracting the category ID from the
+      response.
+
+      There are three unique circumstances handled here:
+        1.) If there is no category associated with the product, we don't
+            attempt to access a category from the categories array.
+
+        2.) If there is only one category, we use the 0-index of the category
+            array
+        
+        3.) If there is more than one category associated with a product, we use
+            1-index of the category array. This index tends to be the most
+            relevant catgeory associated with a product.
+      */
+      var queryCategory;
+      switch (data.product.categories.length) {
+        case 0:
+          break;
+        case 1:
+          queryCategory = data.product.categories[0].category_id;
+          break;
+        default:
+          queryCategory = data.product.categories[1].category_id;
+      }
+
       var isPrime = data.product.buybox_winner.is_prime;
       var price = data.product.buybox_winner.price.value;
 
