@@ -1,13 +1,18 @@
+// other scriptfiles only have to call these two functions
+// displayUsersChoice(product), product is an object and the function will display the user's input product
+// displayResults(results), results is an array of objects and the function will display the top results from the query
+
 var resultEl = $("#results-page");
 var usersChoiceEl = $("#users-choice");
 
+//------------------------------------------------------------------------------//
+//-------this block has to be deleted before submitting project-----------------//
+//------------------------------------------------------------------------------//
+
 //testData was defined in test-search.js
 var results = testData.search_results;
-
 //we want to render the top 5 results
-
 var usersProduct = results[22]; //picked a random product from array
-
 var topFiveResults = [
   results[0],
   results[1],
@@ -15,6 +20,9 @@ var topFiveResults = [
   results[3],
   results[4],
 ];
+//------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------//
 
 function displayResults(results) {
   //we want to display: title, description, price, prime delivery, image, rating, and sentiment analysis, link to buy now//
@@ -106,9 +114,6 @@ function isPrime(prime) {
   }
 }
 
-displayResults(topFiveResults);
-displayUsersChoice(usersProduct);
-
 function displayUsersChoice(usersProduct) {
   usersChoiceEl.html("");
   var title = usersProduct.title;
@@ -154,3 +159,6 @@ function displayUsersChoice(usersProduct) {
       "</div>" //div to close custom-card
   );
 }
+
+displayResults(topFiveResults);
+displayUsersChoice(usersProduct);

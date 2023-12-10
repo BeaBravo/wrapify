@@ -12,20 +12,30 @@ body {
   background-color: var(--selection-color);
 }
 
+/* header styling */
+
 .page-header-title {
   margin-top: 0;
   margin-left: 2rem;
   color: rgb(229, 216, 216);
 }
 
-.custom-select option {
-  text-align: left;
+header img {
+  max-width: 17%;
+  border-radius: 50%;
+  /* padding: 0.5rem; */
+  margin: 2rem;
 }
 
+/* custom-container is where the form is shown on the page */
 .custom-container {
   padding: 1.25rem;
   border: 5px var(--border-color) solid;
   background-color: white;
+}
+
+.custom-select option {
+  text-align: left;
 }
 
 /* slider colors and the thumb */
@@ -98,6 +108,13 @@ textarea.materialize-textarea:focus:not([readonly]) {
 /* -------------------------------------------------------- */
 /* ------ This is the styling for the results page ------- */
 /* ------------------------------------------------------ */
+
+/* back arrow to search page */
+.container a {
+  font-size: large;
+  text-decoration: none;
+}
+
 .custom-section {
   height: auto;
   padding: 1rem;
