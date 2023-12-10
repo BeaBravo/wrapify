@@ -143,7 +143,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
   border: 3px solid white;
   border-radius: 10%;
   font-family: "Material Icon";
-  padding: 0.5rem !important;
+  padding: 1rem !important;
   text-align: center;
 }
 

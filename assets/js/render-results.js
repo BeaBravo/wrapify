@@ -47,7 +47,7 @@ function displayResults(topFiveResults) {
         " /></div>" +
         '<div class="custom-card-content col s12 m8 l8">' +
         '<div class="row">' +
-        '<div class="col s12">' +
+        '<div class="col s12 hide-on-small-only">' +
         description +
         "</div></div>" +
         '<div class="row custom info"><div class="col s6 m3 l3">Price: ' +
@@ -83,17 +83,17 @@ function sentimentRender(sentiment, sales) {
   console.log(sales);
   if (sentiment === "positive" && sales !== undefined) {
     sentimentDiv =
-      '<div class="col s12 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p>' +
+      '<div class="col s6 offset-s3 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p class="hide-on-med-and-down">' +
       sales +
       "</p></div>";
     return sentimentDiv;
   } else if (sentiment === "positive" && sales === undefined) {
     sentimentDiv =
-      '<div class="col s12 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p></p></div>';
+      '<div class="col s6 offset-s3 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p></p></div>';
     return sentimentDiv;
   } else {
     sentimentDiv =
-      '<div class="col s12 m4 l4 sentiment-value negative-sentiment"><span class="material-icons">sentiment_very_dissatisfied</span><p>We do not recommend this product</p></div>';
+      '<div class="col s6 offset-s3 m4 l4 sentiment-value negative-sentiment"><span class="material-icons">sentiment_very_dissatisfied</span><p>We do not recommend this product</p></div>';
     return sentimentDiv;
   }
 }
