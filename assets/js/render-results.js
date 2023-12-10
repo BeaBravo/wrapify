@@ -1,9 +1,12 @@
-var resultEl = $(".custom-section");
+var resultEl = $("#results-page");
+var usersChoiceEl = $("#users-choice");
 
 //testData was defined in test-search.js
 var results = testData.search_results;
 
 //we want to render the top 5 results
+
+var usersProduct = results[22]; //picked a random product from array
 
 var topFiveResults = [
   results[0],
@@ -12,8 +15,6 @@ var topFiveResults = [
   results[3],
   results[4],
 ];
-
-console.log(topFiveResults);
 
 function displayResults(topFiveResults) {
   //we want to display: title, description, price, prime delivery, image, rating, and sentiment analysis, link to buy now//
@@ -67,8 +68,6 @@ function displayResults(topFiveResults) {
   }
 }
 
-displayResults(topFiveResults);
-
 function starsRating(string, times) {
   if (times - Math.floor(times) >= 0.5) {
     string += string.repeat(times - 1) + "star_half";
@@ -81,7 +80,6 @@ function starsRating(string, times) {
 
 function sentimentRender(sentiment, sales) {
   //this function will add a div for sentiment depending if its positive or negative including styling classes
-  console.log(sales);
   if (sentiment === "positive" && sales !== undefined) {
     sentimentDiv =
       '<div class="col s6 offset-s3 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p class="hide-on-med-and-down">' +
@@ -107,4 +105,13 @@ function isPrime(prime) {
     primeDelivery = "";
     return primeDelivery;
   }
+}
+
+console.log(topFiveResults);
+displayResults(topFiveResults);
+console.log(results);
+
+//function to display user's product choice at the top
+function displayUsersChoice() {
+  usersChoiceEl.html("");
 }

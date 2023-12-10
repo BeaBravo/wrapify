@@ -102,6 +102,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
   height: auto;
   padding: 1rem;
   background-color: var(--background-color);
+  margin-top: 1.5rem;
 }
 
 .custom-card {
