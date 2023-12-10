@@ -15,7 +15,7 @@ var topFiveResults = [
 
 // console.log(topFiveResults);
 
-function displayResults() {
+function displayResults(topFiveResults) {
   //we want to display: title, description, price, prime delivery, image, rating, and sentiment analysis, link to buy now//
   //build a for loop to make new objects for this data
   resultEl.html("");
@@ -47,7 +47,7 @@ function displayResults() {
         '<div class="custom-card-content col s12 m8 l8">' +
         '<div class="row">' +
         '<div class="col s12">' +
-        // description +
+        description +
         "</div></div>" +
         '<div class="row custom info"><div class="col s6 m2 l2">Price: ' +
         price +
@@ -65,7 +65,7 @@ function displayResults() {
   }
 }
 
-displayResults();
+displayResults(topFiveResults);
 
 function starsRating(string, times) {
   if (times - Math.floor(times) >= 0.5) {

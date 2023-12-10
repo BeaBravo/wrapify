@@ -9,6 +9,8 @@
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet" />
+    <link href="nouislider.css" rel="stylesheet" />
+
     <link href="./assets/css/style.css" rel="stylesheet" />
 
     <title>Wrapify</title>
@@ -49,19 +51,24 @@
 
         <!-- price range -->
         <div class="row">
-          <label class="range-field custom-label"
-            >Price range <input type="range" id="price-range" min="0" max="200"
-          /></label>
+          <div class="col s12">
+            <label class="range-field custom-label"
+              >Price range
+              <input type="range" id="price-range" min="0" max="200"
+            /></label>
+          </div>
         </div>
 
         <!-- Prime delivery option -->
         <div class="row">
-          <p>
-            <label class="custom-label">
-              <input type="checkbox" id="prime-delivery" />
-              <span>Prime delivery available</span>
-            </label>
-          </p>
+          <div class="col s12">
+            <p>
+              <label class="custom-label">
+                <input type="checkbox" id="prime-delivery" />
+                <span>Prime delivery available</span>
+              </label>
+            </p>
+          </div>
         </div>
 
         <!-- select categories -->
@@ -110,7 +117,7 @@
         </div>
         <!-- Search word keys -->
         <div class="row">
-          <div class="col s8">
+          <div class="col s12">
             <label class="custom-label"
               >give us your ideas by typing search key words</label
             >
@@ -140,5 +147,6 @@
       integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
       crossorigin="anonymous"></script>
     <script src="./assets/js/script.js"></script>
+    <script src="nouislider.js"></script>
   </body>
 </html>

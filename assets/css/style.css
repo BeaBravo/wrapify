@@ -23,7 +23,7 @@ body {
 }
 
 .custom-container {
-  padding: 1rem;
+  padding: 1.25rem;
   border: 5px var(--border-color) solid;
   background-color: white;
 }
