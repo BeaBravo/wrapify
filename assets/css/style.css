@@ -172,6 +172,17 @@ textarea.materialize-textarea:focus:not([readonly]) {
   border: 2px solid red;
 }
 
+/* To add the rotated visual indicator for the user's choice */
+.rotate {
+  background-color: rgba(105, 174, 197, 1);
+  transform: rotate(-45deg) translateX(-50px) translateY(-62px);
+  color: rgb(22, 121, 158);
+  position: absolute;
+  font-size: x-large;
+  font-weight: bold;
+  text-align: center;
+}
+
 @media screen and (min-width: 925px) {
   /* for screens 925px and larger the projects won't take 100% of the section  */
   .custom-container {

@@ -16,13 +16,12 @@ var topFiveResults = [
   results[4],
 ];
 
-function displayResults(topFiveResults) {
+function displayResults(results) {
   //we want to display: title, description, price, prime delivery, image, rating, and sentiment analysis, link to buy now//
   //build a for loop to make new objects for this data
   resultEl.html("");
-
-  for (var i = 0; i < topFiveResults.length; i++) {
-    var result = topFiveResults[i];
+  for (var i = 0; i < results.length; i++) {
+    var result = results[i];
     var title = result.title;
     var price = result.price.raw; //will show the price as a string
     var primeDelivery = isPrime(result.is_prime); //this is a boolean property
@@ -107,11 +106,51 @@ function isPrime(prime) {
   }
 }
 
-console.log(topFiveResults);
 displayResults(topFiveResults);
-console.log(results);
+displayUsersChoice(usersProduct);
 
-//function to display user's product choice at the top
-function displayUsersChoice() {
+function displayUsersChoice(usersProduct) {
   usersChoiceEl.html("");
+  var title = usersProduct.title;
+  var price = usersProduct.price.raw; //will show the price as a string
+  var primeDelivery = isPrime(usersProduct.is_prime); //this is a boolean property
+  var image = usersProduct.image;
+  var rating = usersProduct.rating; //this is a number
+  var link = usersProduct.link;
+  var stars = starsRating("star ", rating);
+  var sales = usersProduct.recent_sales;
+
+  //description=result.description
+  //sentiment=result.sentiment
+  var description =
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, blanditiis magnam ab aliquam quia ipsa laborum quis eius, deleniti animi ipsum, eligendi iure porro minus quos mollitia doloribus in quas.";
+  var sentiment = "positive";
+  var sentimentDiv = sentimentRender(sentiment, sales);
+  //display
+
+  usersChoiceEl.append(
+    '<div class="card row custom-card hoverable"><div class="col s3 rotate hide-on-small-only">Your pick</div><h5>' +
+      title +
+      '</h5><div class="col s12 m4 l4 responsive-image"><img src=' +
+      image +
+      " /></div>" +
+      '<div class="custom-card-content col s12 m8 l8">' +
+      '<div class="row">' +
+      '<div class="col s12 hide-on-small-only">' +
+      description +
+      "</div></div>" +
+      '<div class="row custom info"><div class="col s6 m3 l3">Price: ' +
+      price +
+      primeDelivery +
+      '</div><div class="col s6 m5 l5"> <span class="material-icons">' +
+      stars +
+      "</span>" +
+      "</div>" +
+      sentimentDiv +
+      "</div>" +
+      '<div class="col s12"><a class="btn-small waves-effect waves-light right" id="buy-now-button" href=' +
+      link +
+      ' target="_blank">Buy now </a></div>' +
+      "</div>" //div to close custom-card
+  );
 }
