@@ -105,7 +105,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
 }
 
 .custom-card {
-  padding: 0.5rem;
+  padding: 1rem;
   margin: 1rem;
   background-color: white;
   border-radius: 10px;
@@ -124,6 +124,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
 .responsive-image img {
   width: 100%;
   height: auto;
+  margin-top: 2rem;
 }
 
 #buy-now-button {
@@ -144,16 +145,25 @@ textarea.materialize-textarea:focus:not([readonly]) {
   font-family: "Material Icon";
   padding: 0.5rem !important;
   text-align: center;
-  background-color: rgb(176, 216, 155);
 }
 
 .sentiment-value span {
   font-size: 46px;
-  color: green;
 }
 .sentiment-value p {
   margin-top: 0;
-  color: white;
+  margin-bottom: 0;
+}
+
+.positive-sentiment {
+  background-color: rgb(194, 217, 181);
+  color: green;
+}
+
+.negative-sentiment {
+  background-color: rgb(238, 224, 224);
+  color: red;
+  border: 2px solid red;
 }
 
 @media screen and (min-width: 925px) {

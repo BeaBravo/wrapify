@@ -13,7 +13,7 @@ var topFiveResults = [
   results[4],
 ];
 
-// console.log(topFiveResults);
+console.log(topFiveResults);
 
 function displayResults(topFiveResults) {
   //we want to display: title, description, price, prime delivery, image, rating, and sentiment analysis, link to buy now//
@@ -29,19 +29,20 @@ function displayResults(topFiveResults) {
     var rating = result.rating; //this is a number
     var link = result.link;
     var stars = starsRating("star ", rating);
+    var sales = result.recent_sales;
 
     //description=result.description
     //sentiment=result.sentiment
     var description =
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, blanditiis magnam ab aliquam quia ipsa laborum quis eius, deleniti animi ipsum, eligendi iure porro minus quos mollitia doloribus in quas.";
     var sentiment = "positive";
-    var sentimentDiv = sentimentRender(sentiment);
+    var sentimentDiv = sentimentRender(sentiment, sales);
     //display
 
     resultEl.append(
       '<div class="card row custom-card hoverable"><h5>' +
         title +
-        '</h5><div class="col s12 m4 l4 responsive-image valign-wrapper"><img src=' +
+        '</h5><div class="col s12 m4 l4 responsive-image"><img src=' +
         image +
         " /></div>" +
         '<div class="custom-card-content col s12 m8 l8">' +
@@ -49,7 +50,7 @@ function displayResults(topFiveResults) {
         '<div class="col s12">' +
         description +
         "</div></div>" +
-        '<div class="row custom info"><div class="col s6 m2 l2">Price: ' +
+        '<div class="row custom info"><div class="col s6 m3 l3">Price: ' +
         price +
         '</div><div class="col s6 m5 l5"> <span class="material-icons">' +
         stars +
@@ -77,14 +78,22 @@ function starsRating(string, times) {
   }
 }
 
-function sentimentRender(sentiment) {
-  if (sentiment === "positive") {
+function sentimentRender(sentiment, sales) {
+  //this function will add a div for sentiment depending if its positive or negative including styling classes
+  console.log(sales);
+  if (sentiment === "positive" && sales !== undefined) {
     sentimentDiv =
-      '<div class="col s12 m4 l4 sentiment-value"><span class="material-icons">sentiment_very_satisfied</span><p>This product is greatly reviewed</p></div>';
+      '<div class="col s12 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p>' +
+      sales +
+      "</p></div>";
+    return sentimentDiv;
+  } else if (sentiment === "positive" && sales === undefined) {
+    sentimentDiv =
+      '<div class="col s12 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p></p></div>';
     return sentimentDiv;
   } else {
     sentimentDiv =
-      '<div class="col s12 m4 l4 sentiment-value"><span class="material-icons">sentiment_very_dissatisfied</span><p>This product is badly reviewed</p></div>';
+      '<div class="col s12 m4 l4 sentiment-value negative-sentiment"><span class="material-icons">sentiment_very_dissatisfied</span><p>We do not recommend this product</p></div>';
     return sentimentDiv;
   }
 }
