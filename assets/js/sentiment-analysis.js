@@ -7,6 +7,7 @@
 //------------------------------------------------------------------------------//
 
 // sentimentAnalysis(testReviews);
+// testReviews was defined in test-product-review.js file
 
 var testSentimentArray = [
   "positive",
@@ -27,16 +28,13 @@ var topFiveResults = [
   results[4],
 ];
 
-calculateSentiment(testSentimentArray);
-// console.log(sentiment);
-
 //------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------//
 
 var sentimentArray = [];
 
-function sentimentAnalysis(reviewsArray) {
+async function sentimentAnalysis(reviewsArray) {
   for (var i = 0; i < reviewsArray.length; i++) {
     const url = "https://twinword-sentiment-analysis.p.rapidapi.com/analyze/";
     const options = {
@@ -53,30 +51,33 @@ function sentimentAnalysis(reviewsArray) {
     };
 
     // fetchSentimentData(url, options);
-    var sentiment = fetchSentimentData(url, options);
-    console.log("from fetchSentimentData function: ", sentiment);
+    var sentiment = await fetchSentimentData(url, options);
   }
   return sentiment;
 }
 
-function fetchSentimentData(url, options) {
+async function fetchSentimentData(url, options) {
   //this function is to create an API request to twinword with the content of the review
-  fetch(url, options)
+  var sentiment = await fetch(url, options)
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
       sentiment = data.type;
-      getSentimentArray(sentiment);
+      // return sentiment;
+      sentimentArray = getSentimentArray(sentiment);
+      rating = calculateSentiment(sentimentArray);
+      return rating;
     });
+  // console.log("sentiment for this product: ", sentiment);
+  return sentiment;
 }
 
 function getSentimentArray(sentiment) {
   //this function will save the current sentiment response in an array and call to calculate sentiment score
   sentimentArray.push(sentiment);
-  console.log(sentimentArray);
-  var score = calculateSentiment(sentimentArray);
-  return score;
+
+  return sentimentArray;
 }
 
 function calculateSentiment(array) {
@@ -93,7 +94,6 @@ function calculateSentiment(array) {
     totalSentiment = totalSentiment + sentimentScore;
   }
   totalRating = totalSentiment / array.length;
-  addPropertytoProduct(totalRating);
   return totalRating;
 }
 
@@ -108,3 +108,10 @@ function addPropertytoProduct(sentimentRating) {
 }
 
 //somewhere in here this needs to go back to add a property into the resultsArray element these reviews belong to
+
+//maybe write a function where it waits for sentimentalAnalysis to be done and then it adds the property ? 
+//async function asignProperty(reviewsArray) {
+// var sentiment = await sentimentAnalysis(reviewsArray) 
+// addPropertyProduct(sentiment) 
+// return the new object with new property 
+// }

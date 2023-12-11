@@ -40,7 +40,7 @@ function displayResults(results) {
     var sales = result.recent_sales;
 
     //description=result.description
-    //sentiment=result.sentiment
+    //sentiment=result.sentiment_score
     var description =
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, blanditiis magnam ab aliquam quia ipsa laborum quis eius, deleniti animi ipsum, eligendi iure porro minus quos mollitia doloribus in quas.";
     var sentiment = "positive";
