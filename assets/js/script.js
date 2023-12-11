@@ -128,7 +128,7 @@ var globalData = {};
 function getSearchQueryURL() {
 
   // Below will only run when API use is allowed
-  if (doesUserHaveProductInMind && useAPI && false) {
+  if (doesUserHaveProductInMind() && useAPI) {
     var queryUrl = `${baseProductURL}&url=${getInMindProductUrl()}`;
     console.log("User has product in mind: ", queryUrl);
     
@@ -149,6 +149,7 @@ function getSearchQueryURL() {
       response.
 
       There are three unique circumstances handled here:
+
         1.) If there is no category associated with the product, we don't
             attempt to access a category from the categories array.
 
