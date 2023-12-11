@@ -1,5 +1,6 @@
 // other scriptfiles only have to call one function to iterate over the top 5 reviews for the product
 // sentimentAnalysis(reviewsArray), reviewsArray is an array of objects containing review info
+// function sentimentAnalysis will have to be inside a for loop to grab each product and its tops reviews
 
 //------------------------------------------------------------------------------//
 //-------this block has to be deleted before submitting project-----------------//
