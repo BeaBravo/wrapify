@@ -4,10 +4,10 @@ const useAPI = true;
 const rainForestApiKey = "D961BC3F959A416CB66BA38ED853CB39";
 
 // The below API endpoint is used for acquiring an amazon search listing of products
-const baseListingURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=search&amazon_domain=amazon.com`;
+const baseListingUrl = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=search&amazon_domain=amazon.com`;
 
 // The below API endpoint is used for viewing an individual product listing
-const baseProductURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=product`;
+const baseProductUrl = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=product`;
 
 // Destructure the array containing our two <select> tags. This will break if the number of selects were to change!
 const [productSelect, categorySelect] = document.querySelectorAll("select");
@@ -75,6 +75,14 @@ function getCategory() {
 // Each keyword is added to a global set which is constantly modified as
 // the user
 var keywords = new Set();
+
+function resetPage() {
+  // Remove all keywords from the global keywords set
+  //var chips = document.querySelectorAll(".chips");
+  //var instance = M.Chips.getInstance(chips);
+  
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize our select menus
   var instances = M.FormSelect.init(document.querySelectorAll('select'), {});
@@ -102,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Given this functions' parameters, build a query URL to the Rainforest API
 // for the purpose of viewing a search listing of products
 function buildSearchUrl(search_term, category_id) {
-  let queryURL = baseListingURL;
+  let queryURL = baseListingUrl;
   if (search_term) {
     queryURL += `&search_term=${Array.from(search_term).join('+')}`;
   }
@@ -115,13 +123,13 @@ function buildSearchUrl(search_term, category_id) {
 // Given a url to an amazon product, build a query URL to the Rainforest API
 // for the purpose of viewing information about a specific product
 function buildProductUrl(url) {
-  return `${baseProductURL}&url=${url}`;
+  return `${baseProductUrl}&url=${url}`;
 }
 
 // Get a rainforest query URL for viewing a product's information based on its
 // ASIN number
 function buildAsinUrl(asin) {
-  return `${baseProductURL}&amazon_domain=amazon.com&asin=${asin}`;
+  return `${baseProductUrl}&amazon_domain=amazon.com&asin=${asin}`;
 }
 
 // The submit button
@@ -169,18 +177,18 @@ function runSearch(productViewer) {
       for (const keywordIterable of [data.product.keywords_list, keywords]) {
         for (const keyword of keywordIterable) {
           if (keyword.length < 3) {
+            // Even though the word 'no' is 2 characters long. Having negation
+            // in a keyword *could* be important so we add it to the queryKeywords
+            // set - for now
             if (keyword !== "no") {
               continue;
             }
           }
-          // Some "boring" words that often appear in keywords, 
+          // Some "boring" words that often appear in keywords are skipped
           if (["for", "the", "with"].includes(keyword)) {
             continue;
           }
-
-
           queryKeywords.add(keyword);
-
         }
       }
 
