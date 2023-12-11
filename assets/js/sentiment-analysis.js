@@ -34,6 +34,9 @@ var topFiveResults = [
 
 var sentimentArray = [];
 
+var sentiment = await sentimentAnalysis(testReviews);
+console.log(sentiment);
+
 async function sentimentAnalysis(reviewsArray) {
   for (var i = 0; i < reviewsArray.length; i++) {
     const url = "https://twinword-sentiment-analysis.p.rapidapi.com/analyze/";
@@ -69,7 +72,6 @@ async function fetchSentimentData(url, options) {
       rating = calculateSentiment(sentimentArray);
       return rating;
     });
-  // console.log("sentiment for this product: ", sentiment);
   return sentiment;
 }
 
@@ -109,9 +111,9 @@ function addPropertytoProduct(sentimentRating) {
 
 //somewhere in here this needs to go back to add a property into the resultsArray element these reviews belong to
 
-//maybe write a function where it waits for sentimentalAnalysis to be done and then it adds the property ? 
+//maybe write a function where it waits for sentimentalAnalysis to be done and then it adds the property ?
 //async function asignProperty(reviewsArray) {
-// var sentiment = await sentimentAnalysis(reviewsArray) 
-// addPropertyProduct(sentiment) 
-// return the new object with new property 
+// var sentiment = await sentimentAnalysis(reviewsArray)
+// addPropertyProduct(sentiment)
+// return the new object with new property
 // }
