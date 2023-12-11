@@ -139,7 +139,7 @@ function buildProductUrl(url) {
 // Get a rainforest query URL for viewing a product's information based on its
 // ASIN number
 function productUrlFromAsin(asin) {
-  return `${baseProductURL}&asin=${asin}`;
+  return `${baseProductURL}&amazon_domain=amazon.com&asin=${asin}`;
 }
 
 /*
@@ -252,7 +252,21 @@ function viewSearch(productViewer) {
       console.log(data);
 
       // Set object containing keywords about the users' product in mind
-      var queryKeywords = new Set(data.product.keywords_list);
+      var queryKeywords = new Set();
+
+      // Below nested for loop combines all the keywords parsed from the users'
+      // product in mind as well as any keyword chips they may have provided.
+      // Furthermore, any 1 or 2 character keywords are dropped since they are
+      // more likely to pollute our search result than to helps us find quality
+      // products
+      for (const keywordIterable of [data.product.keywords_list, keywords]) {
+        for (const keyword of keywordIterable) {
+          if (keyword.length > 2) {
+            queryKeywords.add(keyword);
+          }
+        }
+      }
+
       console.log("Keywords associated with this product: ", queryKeywords);
 
       /* The below switch statement handles extracting the category ID from the
@@ -373,11 +387,3 @@ function viewProductInfo(queryURL) {
     console.error(error);
   });
 }
-  
-
-// Placeholder for the logic to generate the URL based on the ASIN
-function getAsinURL(asin) {
-  // Implement the logic to generate the URL based on the ASIN
-  // For example, return a URL like 'https://example.com/reviews?asin=' + asin;
-}
-
