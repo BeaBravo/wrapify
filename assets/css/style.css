@@ -110,9 +110,17 @@ textarea.materialize-textarea:focus:not([readonly]) {
 /* ------------------------------------------------------ */
 
 /* back arrow to search page */
-.container a {
+#back-to-search {
   font-size: large;
   text-decoration: none;
+}
+
+.material-icons {
+  vertical-align: text-top;
+}
+
+#back-to-search:hover {
+  cursor: pointer;
 }
 
 .custom-section {
