@@ -16,7 +16,7 @@ const [productSelect, categorySelect] = document.querySelectorAll("select");
 const urlPromptEl = document.getElementById("product-url");
 
 // Hide the url prompt upon first start
-toggleUrlInput();
+//toggleUrlInput();
 
 /*
 Returns a boolean (true / false) for whether or not they have a product in mind to use as
@@ -76,12 +76,23 @@ function getCategory() {
 // the user
 var keywords = new Set();
 
+// Reset various parameters on the page so that the user can look for a new product
 function resetPage() {
-  // Remove all keywords from the global keywords set
-  //var chips = document.querySelectorAll(".chips");
-  //var instance = M.Chips.getInstance(chips);
+  // Hide the URL input upon page start / initial load
+  urlPromptEl.parentElement.style.display = "none";
+
+  // Clear any previously input URL's
+  document.getElementById("product-url").value = "";
   
+  // Reset the "Do you have a product in mind?" product select
+  productSelect.selectedIndex = 0;
+
+  // Chips are automatically deleted but the keywords they added to our global
+  // keywords list are not. We manually clear the keywords set instead:
+  keywords.clear();  
 }
+
+resetPage();
 
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize our select menus
