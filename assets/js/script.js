@@ -146,9 +146,9 @@ function buildAsinUrl(asin) {
 // The submit button
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
-  renderLoader();
+  //renderLoader();
   runSearch(viewProductInfo);
-  removeLoader();
+  //removeLoader();
 });
 
 // Delete the loader and its associated HTML when all fetch requests have been made
@@ -319,6 +319,7 @@ function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
     console.log("Successfully did a product search! Received data: ", data);
     var resultsArray = [];
 
+    // Use Math.min to make sure we iterate through at MOST 'maxSearchResults' number of products
     for (var i = 0; i < Math.min(data.search_results.length, maxSearchResults); i++) {
       var result = {
         title: data.search_results[i].title,
@@ -328,6 +329,7 @@ function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
         rating: data.search_results[i].rating,
         price: data.search_results[i].price.raw,
         link: data.search_results[i].link,
+        recentSales: data.search_results[i].recent_sales
       };
 
       console.log("Found a product: ", result);
@@ -335,7 +337,7 @@ function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
       resultsArray.push(result);
 
       // Fetching reviews based on the asinURL
-      fetch(productUrlFromAsin(result.asin))
+      fetch(buildAsinUrl(result.asin))
       .then(function (response2) {
         return response2.json();
       })
@@ -348,7 +350,7 @@ function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
         console.log("Data about the found product: ", productData);
 
         var reviewsArray = [];
-        for (var j = 0; j < Math.min(productData.product.top_reviews.length, 5); j++) {
+        for (var j = 0; j < Math.min(productData.product.top_reviews.length, maxComments); j++) {
           var review = {
             body: productData.product.top_reviews[j].body,
             rating: productData.product.top_reviews[j].rating,
@@ -360,6 +362,9 @@ function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
 
         // Associating reviewsArray with the corresponding result
         result.reviews = reviewsArray;
+        console.log("result object -> ", result);
+        sentimentAnalysis(result.reviews, result);
+        console.log("sentiment score from inside script.js -> ", result.sentiment_score);
       })
       .catch(function (error) {
         console.error(error);
