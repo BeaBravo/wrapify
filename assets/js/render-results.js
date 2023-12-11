@@ -160,5 +160,9 @@ function displayUsersChoice(usersProduct) {
   );
 }
 
-displayResults(topFiveResults);
-displayUsersChoice(usersProduct);
+// displayResults(topFiveResults);
+// displayUsersChoice(usersProduct);
+
+var results = JSON.parse(localStorage.getItem("results"));
+
+displayResults(results);
