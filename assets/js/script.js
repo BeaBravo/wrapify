@@ -197,11 +197,74 @@ document.getElementById('search-button').addEventListener('click', function(even
 
   // Sets our globalData variable's 'queryURL' property
   getSearchQueryURL();
-  console.log("Query URL: ", globalData.queryURL);
-  viewProductInfo(globalData.queryURL);
+  runSearch(viewProductInfo);
+
 });
 
+// Restructured version of getSearchQueryURL. Accepts a product viewing function
+// as its argument
+function runSearch(productViewer) {
 
+  // Below will only run when API use is allowed
+  if (doesUserHaveProductInMind() && useAPI) {
+    var queryUrl = `${baseProductURL}&url=${getInMindProductUrl()}`;
+    console.log("User has product in mind: ", queryUrl);
+    
+    fetch(queryUrl)
+    .then(function(response) {
+      if (response.ok) {
+        return response.json();
+      }
+    })
+    .then(function(data) {
+      console.log("Data from fetch request of the product in mind:");
+      console.log(data);
+
+      var asin = data.product.asin;
+      var queryKeywords = data.product.keywords_list;
+
+      /* The below switch statement handles extracting the category ID from the
+      response.
+
+      There are three unique circumstances handled here:
+
+        1.) If there is no category associated with the product, we don't
+            attempt to access a category from the categories array and instead
+            attempt to use a category as selected on index.html
+
+        2.) If there is only one category, we use the 0-index of the category
+            array
+        
+        3.) If there is more than one category associated with a product, we use
+            1-index of the category array. This index tends to be the most
+            relevant catgeory associated with a product.
+      */
+      var queryCategory;
+      switch (data.product.categories.length) {
+        case 0:
+          queryCategory = getCategory();
+          break;
+        case 1:
+          queryCategory = data.product.categories[0].category_id;
+          break;
+        default:
+          queryCategory = data.product.categories[1].category_id;
+      }
+
+      var isPrime = data.product.buybox_winner.is_prime;
+      var price = data.product.buybox_winner.price.value;
+
+      if (!isPrime) {
+        isPrime = isPrimeDelivery();
+      }
+
+      productViewer(buildQueryUrl(queryKeywords, queryCategory));
+    });
+  } else {
+    // This code block runs when the user has no product in mind
+    productViewer(buildQueryUrl(keywords, getCategory()));
+  }
+}
 
 // --------------------------- Niel's code ----------------------------------
 //AMAZON API
