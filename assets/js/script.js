@@ -361,6 +361,7 @@ function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
         console.log("Product reviews: ", reviewsArray);
 
         // Associating reviewsArray with the corresponding result
+
         result.reviews = reviewsArray;
         console.log("result object -> ", result);
         sentimentAnalysis(result.reviews, result);
@@ -370,6 +371,8 @@ function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
         console.error(error);
       });
     }
+    document.location.replace("./results-page.html");
+    displayResults(resultsArray);
 
     // Now resultsArray contains the desired information for each search result, including reviews
     //console.log(resultsArray);

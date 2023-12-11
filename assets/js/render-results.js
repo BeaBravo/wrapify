@@ -5,25 +5,6 @@
 var resultEl = $("#results-page");
 var usersChoiceEl = $("#users-choice");
 
-//------------------------------------------------------------------------------//
-//-------this block has to be deleted before submitting project-----------------//
-//------------------------------------------------------------------------------//
-
-//testData was defined in test-search.js
-var results = testData.search_results;
-//we want to render the top 5 results
-var usersProduct = results[22]; //picked a random product from array
-var topFiveResults = [
-  results[0],
-  results[1],
-  results[2],
-  results[3],
-  results[4],
-];
-//------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------//
-
 function displayResults(results) {
   //we want to display: title, description, price, prime delivery, image, rating, and sentiment analysis, link to buy now//
   //build a for loop to make new objects for this data
@@ -39,11 +20,7 @@ function displayResults(results) {
     var stars = starsRating("star ", rating);
     var sales = result.recent_sales;
 
-    //description=result.description
-    //sentiment=result.sentiment_score
-    var description =
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, blanditiis magnam ab aliquam quia ipsa laborum quis eius, deleniti animi ipsum, eligendi iure porro minus quos mollitia doloribus in quas.";
-    var sentiment = "positive";
+    var sentiment=result.sentiment_score
     var sentimentDiv = sentimentRender(sentiment, sales);
     //display
 
@@ -56,7 +33,6 @@ function displayResults(results) {
         '<div class="custom-card-content col s12 m8 l8">' +
         '<div class="row">' +
         '<div class="col s12 hide-on-small-only">' +
-        description +
         "</div></div>" +
         '<div class="row custom info"><div class="col s6 m3 l3">Price: ' +
         price +
@@ -87,21 +63,26 @@ function starsRating(string, times) {
 
 function sentimentRender(sentiment, sales) {
   //this function will add a div for sentiment depending if its positive or negative including styling classes
-  if (sentiment === "positive" && sales !== undefined) {
-    sentimentDiv =
-      '<div class="col s6 offset-s3 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p class="hide-on-med-and-down">' +
-      sales +
-      "</p></div>";
-    return sentimentDiv;
-  } else if (sentiment === "positive" && sales === undefined) {
-    sentimentDiv =
-      '<div class="col s6 offset-s3 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p></p></div>';
-    return sentimentDiv;
+  var sentimentString = "";
+  var sentimentDiv;
+  
+  /*
+  if (sales !== undefined) {
+    sentimentString = sales;
   } else {
-    sentimentDiv =
-      '<div class="col s6 offset-s3 m4 l4 sentiment-value negative-sentiment"><span class="material-icons">sentiment_very_dissatisfied</span><p>We do not recommend this product</p></div>';
-    return sentimentDiv;
+    sentimentString = "";
   }
+  */
+
+  if (sentiment > 0.4) {
+    sentimentString = " " + Number(sentiment*100).toString() + "% positive reviews";
+    sentimentDiv = `<div class="col s6 offset-s3 m4 l4 sentiment-value positive-sentiment"><span class="material-icons">sentiment_very_satisfied</span><p>${sentimentString}</p></div>`
+ 
+  } else {
+    sentimentDiv = `<div class="col s6 offset-s3 m4 l4 sentiment-value negative-sentiment"><span class="material-icons">sentiment_very_dissatisfied</span><p>${sentimentString}</p></div>`;
+  }
+
+  return sentimentDiv;
 }
 
 function isPrime(prime) {
@@ -160,5 +141,5 @@ function displayUsersChoice(usersProduct) {
   );
 }
 
-displayResults(topFiveResults);
-displayUsersChoice(usersProduct);
+//displayResults(topFiveResults);
+//displayUsersChoice(usersProduct);
