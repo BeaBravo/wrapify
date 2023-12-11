@@ -1,5 +1,5 @@
 // CHANGE THIS VARIABLE TO TRUE ONLY WHEN API IS TO BE USED
-const useAPI = true;
+const useAPI = false;
 
 const rainForestApiKey = "D961BC3F959A416CB66BA38ED853CB39";
 
@@ -146,10 +146,58 @@ function buildAsinUrl(asin) {
 // The submit button
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
+  renderLoader();
 
-  runSearch(viewProductInfo);
+  //runSearch(viewProductInfo);
 
 });
+
+
+function removeLoader() {
+  document.getElementsByClassName("custom-container")[0].style.opacity = 1;
+}
+
+function renderLoader() {
+  var container = document.getElementsByClassName("custom-container")[0];
+  container.style.opacity = 0.3;
+
+  var loaderEl = document.createElement("div");
+  loaderEl.classList.add("preloader-wrapper");
+  loaderEl.classList.add("active");
+  //var spinnerEl = document.createElement("div");
+  //spinnerEl.classList.add("spiner-layer")
+  loaderEl.innerHTML = `
+  <div class="spinner-layer spinner-red-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div>
+    <div class="gap-patch">
+      <div class="circle"></div>
+    </div>
+    <div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+  `;
+
+  loaderEl.style.zIndex = 1;
+  
+/*
+  <div class="preloader-wrapper active">
+  <div class="spinner-layer spinner-red-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+</div>
+*/
+  container.appendChild(loaderEl);
+
+}
 
 /*
   Build a rainforest API product search fetch request based on input parameters
@@ -189,7 +237,7 @@ function runSearch(productViewer) {
         for (const keyword of keywordIterable) {
           if (keyword.length < 3) {
             // Even though the word 'no' is 2 characters long. Having negation
-            // in a keyword *could* be important so we add it to the queryKeywords
+            // as a keyword *could* be important so we add it to the queryKeywords
             // set - for now
             if (keyword !== "no") {
               continue;
