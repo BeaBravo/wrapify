@@ -147,25 +147,28 @@ function buildAsinUrl(asin) {
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
   renderLoader();
-
-  //runSearch(viewProductInfo);
-
+  runSearch(viewProductInfo);
+  removeLoader();
 });
 
-
+// Delete the loader and its associated HTML when all fetch requests have been made
 function removeLoader() {
+  // reset the opacity so the screen is no longer blurred
   document.getElementsByClassName("custom-container")[0].style.opacity = 1;
+
+  // Delete the loader if it is presently on the screen:
+  var loaderEl = document.getElementsByClassName("preloader-wrapper")[0];
+  if (loaderEl) {
+    loaderEl.remove();
+  }
 }
 
+// Render a loader in the center of the input form while fetch requests are being made
 function renderLoader() {
   var container = document.getElementsByClassName("custom-container")[0];
-  container.style.opacity = 0.3;
-
   var loaderEl = document.createElement("div");
   loaderEl.classList.add("preloader-wrapper");
   loaderEl.classList.add("active");
-  //var spinnerEl = document.createElement("div");
-  //spinnerEl.classList.add("spiner-layer")
   loaderEl.innerHTML = `
   <div class="spinner-layer spinner-red-only">
     <div class="circle-clipper left">
@@ -179,22 +182,21 @@ function renderLoader() {
     </div>
   </div>
   `;
+  /*
+  // The below should be translated to CSS
 
+  container.style.opacity = 0.3; // blur the form container while loading
+  loaderEl.style.position = "absolute";
+  var rect = container.getBoundingClientRect();
+
+  // Place the loader in the middle of the container by
+  // averaging the left and right x coordinates and the top
+  // and bottom y coordinates
+  loaderEl.style.left = `${(rect.right + rect.left) / 2}px`;
+  loaderEl.style.top = `${(rect.bottom + rect.top) / 2}px`;
   loaderEl.style.zIndex = 1;
+  */
   
-/*
-  <div class="preloader-wrapper active">
-  <div class="spinner-layer spinner-red-only">
-    <div class="circle-clipper left">
-      <div class="circle"></div>
-    </div><div class="gap-patch">
-      <div class="circle"></div>
-    </div><div class="circle-clipper right">
-      <div class="circle"></div>
-    </div>
-  </div>
-</div>
-*/
   container.appendChild(loaderEl);
 
 }
