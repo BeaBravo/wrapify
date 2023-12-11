@@ -103,6 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
   Using the parameters provided, create a product listing query for the rainforest
   API
 */
+/*
 function buildQueryUrl(keywords, category) {
   let queryURL = baseListingURL;
   if (keywords.size) {
@@ -115,6 +116,25 @@ function buildQueryUrl(keywords, category) {
   console.log("Product listing query URL constructed: ", queryURL);
   return queryURL; 
 }
+*/
+// Given this functions' parameters, build a query URL to the Rainforest API
+// for the purpose of viewing a search listing of products
+function buildSearchUrl(search_term, category_id) {
+  let queryURL = baseListingURL;
+  if (search_term) {
+    queryURL += `&search_term=${Array.from(search_term).join('+')}`;
+  }
+  if (category_id) {
+    queryURL += `&category_id=${category_id}`;
+  }
+  return queryURL;
+}
+
+// Given a url to an amazon product, build a query URL to the Rainforest API
+// for the purpose of viewing information about a specific product
+function buildProductUrl(url) {
+  return `${baseProductURL}&url=${url}`
+}
 
 /*
   Build a product search query url from the parameters selected by the user.
@@ -124,86 +144,87 @@ function buildQueryUrl(keywords, category) {
   This product search query url is passed to a new fetch request that parses
   data and performs sentiment analysis (script2.js)
 */
-var globalData = {};
-function getSearchQueryURL() {
+// var globalData = {};
+// function getSearchQueryURL() {
 
-  // Below will only run when API use is allowed
-  if (doesUserHaveProductInMind() && useAPI) {
-    var queryUrl = `${baseProductURL}&url=${getInMindProductUrl()}`;
-    console.log("User has product in mind: ", queryUrl);
+//   // Below will only run when API use is allowed
+//   if (doesUserHaveProductInMind() && useAPI) {
+//     var queryUrl = `${baseProductURL}&url=${getInMindProductUrl()}`;
+//     console.log("User has product in mind: ", queryUrl);
     
-    fetch(queryUrl)
-    .then(function(response) {
-      if (response.ok) {
-        return response.json();
-      }
-    })
-    .then(function(data) {
-      console.log("Data from fetch request of the product in mind:");
-      console.log(data);
+//     fetch(queryUrl)
+//     .then(function(response) {
+//       if (response.ok) {
+//         return response.json();
+//       }
+//     })
+//     .then(function(data) {
+//       console.log("Data from fetch request of the product in mind:");
+//       console.log(data);
 
-      var asin = data.product.asin;
-      var queryKeywords = data.product.keywords_list;
+//       var asin = data.product.asin;
+//       var queryKeywords = data.product.keywords_list;
 
-      /* The below switch statement handles extracting the category ID from the
-      response.
+//       /* The below switch statement handles extracting the category ID from the
+//       response.
 
-      There are three unique circumstances handled here:
+//       There are three unique circumstances handled here:
 
-        1.) If there is no category associated with the product, we don't
-            attempt to access a category from the categories array.
+//         1.) If there is no category associated with the product, we don't
+//             attempt to access a category from the categories array.
 
-        2.) If there is only one category, we use the 0-index of the category
-            array
+//         2.) If there is only one category, we use the 0-index of the category
+//             array
         
-        3.) If there is more than one category associated with a product, we use
-            1-index of the category array. This index tends to be the most
-            relevant catgeory associated with a product.
-      */
-      var queryCategory;
-      switch (data.product.categories.length) {
-        case 0:
-          break;
-        case 1:
-          queryCategory = data.product.categories[0].category_id;
-          break;
-        default:
-          queryCategory = data.product.categories[1].category_id;
-      }
+//         3.) If there is more than one category associated with a product, we use
+//             1-index of the category array. This index tends to be the most
+//             relevant catgeory associated with a product.
+//       */
+//       var queryCategory;
+//       switch (data.product.categories.length) {
+//         case 0:
+//           break;
+//         case 1:
+//           queryCategory = data.product.categories[0].category_id;
+//           break;
+//         default:
+//           queryCategory = data.product.categories[1].category_id;
+//       }
 
-      var isPrime = data.product.buybox_winner.is_prime;
-      var price = data.product.buybox_winner.price.value;
+//       var isPrime = data.product.buybox_winner.is_prime;
+//       var price = data.product.buybox_winner.price.value;
 
-      if (!queryCategory) {
-        queryCategory = getCategory();
-      }
+//       if (!queryCategory) {
+//         queryCategory = getCategory();
+//       }
 
-      if (!isPrime) {
-        isPrime = isPrimeDelivery();
-      }
+//       if (!isPrime) {
+//         isPrime = isPrimeDelivery();
+//       }
 
-      // A search query for a user with an inspired product:
-      globalData.queryURL = buildQueryUrl(queryKeywords, queryCategory);
+//       // A search query for a user with an inspired product:
+//       globalData.queryURL = buildQueryUrl(queryKeywords, queryCategory);
 
-    });
-  } else {
-    globalData.queryURL = buildQueryUrl(keywords, getCategory());
-  }
-}
+//     });
+//   } else {
+//     globalData.queryURL = buildQueryUrl(keywords, getCategory());
+//   }
+// }
 
 // The submit button
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
 
   // Sets our globalData variable's 'queryURL' property
-  getSearchQueryURL();
-  runSearch(viewProductInfo);
+  //getSearchQueryURL();
+  //runSearch(viewProductInfo);
+  viewSearch(viewProductInfo);
 
 });
 
 // Restructured version of getSearchQueryURL. Accepts a product viewing function
 // as its argument
-function runSearch(productViewer) {
+function viewSearch(productViewer) {
 
   // Below will only run when API use is allowed
   if (doesUserHaveProductInMind() && useAPI) {
@@ -217,11 +238,16 @@ function runSearch(productViewer) {
       }
     })
     .then(function(data) {
+      if (!data.request_info.success) {
+        console.log("Error in viewSearch function when attempting to fetch information about the users' product in mind: ");
+        console.log(data.request_info.message);
+      }
       console.log("Data from fetch request of the product in mind:");
       console.log(data);
 
-      var asin = data.product.asin;
-      var queryKeywords = data.product.keywords_list;
+      // Set object containing keywords about the users' product in mind
+      var queryKeywords = new Set(data.product.keywords_list);
+      console.log("Keywords associated with this product: ", queryKeywords);
 
       /* The below switch statement handles extracting the category ID from the
       response.
@@ -258,11 +284,12 @@ function runSearch(productViewer) {
         isPrime = isPrimeDelivery();
       }
 
-      productViewer(buildQueryUrl(queryKeywords, queryCategory));
+      // TODO: use set.union for queryKeywords and global keywords
+      productViewer(buildSearchUrl(queryKeywords, queryCategory));
     });
   } else {
     // This code block runs when the user has no product in mind
-    productViewer(buildQueryUrl(keywords, getCategory()));
+    productViewer(buildSearchUrl(keywords, getCategory()));
   }
 }
 
@@ -273,12 +300,17 @@ function runSearch(productViewer) {
 function viewProductInfo(queryURL) {
   // SEARCH LISTINGS API
   // USER JOURNEY 1
-  console.log()
   fetch(queryURL)
   .then(function (response) {
     return response.json();
   })
   .then(function (data) {
+    if (!data.request_info.success) {
+      console.log("Received an error when attempting to do a product search: ");
+      console.log(data.request_info.message);
+      return;
+    }
+    console.log("Successfully did a product search! Received data: ", data);
     var resultsArray = [];
 
     for (var i = 0; i < Math.min(data.search_results.length, 1); i++) {
