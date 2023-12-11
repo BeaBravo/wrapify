@@ -15,7 +15,19 @@ var testSentimentArray = [
   "neutral",
 ];
 
+//testData was defined in test-search.js
+var results = testData.search_results;
+var usersProduct = results[22]; //picked a random product from array
+var topFiveResults = [
+  results[0],
+  results[1],
+  results[2],
+  results[3],
+  results[4],
+];
+
 calculateSentiment(testSentimentArray);
+// console.log(sentiment);
 
 //------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------//
@@ -32,15 +44,18 @@ function sentimentAnalysis(reviewsArray) {
         "content-type": "application/x-www-form-urlencoded",
         "X-RapidAPI-Key": "5901c52a65msh8bbb26b5dff2e05p11e8f9jsn5ad0d7fa75e8",
         "X-RapidAPI-Host": "twinword-sentiment-analysis.p.rapidapi.com",
-        "Retry-After": 60, //in case it fails we want to wait three seconds to try again
+        "Retry-After": 3, //in case it fails we want to wait three seconds to try again
       },
       body: new URLSearchParams({
         text: reviewsArray[i].body,
       }),
     };
 
-    fetchSentimentData(url, options);
+    // fetchSentimentData(url, options);
+    var sentiment = fetchSentimentData(url, options);
+    console.log("from fetchSentimentData function: ", sentiment);
   }
+  return sentiment;
 }
 
 function fetchSentimentData(url, options) {
@@ -59,24 +74,36 @@ function getSentimentArray(sentiment) {
   //this function will save the current sentiment response in an array and call to calculate sentiment score
   sentimentArray.push(sentiment);
   console.log(sentimentArray);
-  calculateSentiment(sentimentArray);
+  var score = calculateSentiment(sentimentArray);
+  return score;
 }
 
 function calculateSentiment(array) {
-  //this will calculate a total sentiment. +1 for every positive review, -1 for every negative, 0 for every neutral review
+  //this will count how many positive reviews this product has and calculate a score out of 1
   var totalSentiment = 0;
   var sentimentScore = 0;
   for (var i = 0; i < array.length; i++) {
     if (array[i] === "positive") {
       sentimentScore = 1;
-    } else if (array[i] === "negative") {
-      sentimentScore = -1;
     } else {
       sentimentScore = 0;
     }
 
     totalSentiment = totalSentiment + sentimentScore;
   }
-  console.log("total sentiment: ", totalSentiment);
-  return totalSentiment;
+  totalRating = totalSentiment / array.length;
+  addPropertytoProduct(totalRating);
+  return totalRating;
 }
+
+function addPropertytoProduct(sentimentRating) {
+  //the product is stored in a global variable from the Rainforest API product data API
+  //grab this object.sentiment_score = sentimentRating;
+  var currentResult = topFiveResults[0]; //<------ this needs to be updated with array ----------->
+  // console.log(currentResult);
+  currentResult.sentiment_score = sentimentRating;
+  console.log(currentResult);
+  return currentResult;
+}
+
+//somewhere in here this needs to go back to add a property into the resultsArray element these reviews belong to
