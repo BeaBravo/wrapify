@@ -4,10 +4,10 @@ const useAPI = true;
 const rainForestApiKey = "D961BC3F959A416CB66BA38ED853CB39";
 
 // The below API endpoint is used for acquiring an amazon search listing of products
-const baseListingURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=search&amazon_domain=amazon.com`;
+const baseListingUrl = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=search&amazon_domain=amazon.com`;
 
 // The below API endpoint is used for viewing an individual product listing
-const baseProductURL = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=product`;
+const baseProductUrl = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=product`;
 
 // Destructure the array containing our two <select> tags. This will break if the number of selects were to change!
 const [productSelect, categorySelect] = document.querySelectorAll("select");
@@ -75,6 +75,14 @@ function getCategory() {
 // Each keyword is added to a global set which is constantly modified as
 // the user
 var keywords = new Set();
+
+function resetPage() {
+  // Remove all keywords from the global keywords set
+  //var chips = document.querySelectorAll(".chips");
+  //var instance = M.Chips.getInstance(chips);
+  
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize our select menus
   var instances = M.FormSelect.init(document.querySelectorAll('select'), {});
@@ -99,37 +107,49 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-/*
-  Using the parameters provided, create a product listing query for the rainforest
-  API
-*/
-function buildQueryUrl(keywords, category) {
-  let queryURL = baseListingURL;
-  if (keywords.size) {
-    queryURL += `&search_term=${Array.from(keywords).join('+')}`
+// Given this functions' parameters, build a query URL to the Rainforest API
+// for the purpose of viewing a search listing of products
+function buildSearchUrl(search_term, category_id) {
+  let queryURL = baseListingUrl;
+  if (search_term) {
+    queryURL += `&search_term=${Array.from(search_term).join('+')}`;
   }
-  var categoryId = getCategory();
-  if (categoryId) {
-    queryURL += `&category_id=${categoryId}`;
+  if (category_id) {
+    queryURL += `&category_id=${category_id}`;
   }
-  console.log("Product listing query URL constructed: ", queryURL);
-  return queryURL; 
+  return queryURL;
 }
 
-/*
-  Build a product search query url from the parameters selected by the user.
-  *if* a product url was provided, we use the product category, keywords, etc.
-  from that product as defaults.
+// Given a url to an amazon product, build a query URL to the Rainforest API
+// for the purpose of viewing information about a specific product
+function buildProductUrl(url) {
+  return `${baseProductUrl}&url=${url}`;
+}
 
-  This product search query url is passed to a new fetch request that parses
-  data and performs sentiment analysis (script2.js)
+// Get a rainforest query URL for viewing a product's information based on its
+// ASIN number
+function buildAsinUrl(asin) {
+  return `${baseProductUrl}&amazon_domain=amazon.com&asin=${asin}`;
+}
+
+// The submit button
+document.getElementById('search-button').addEventListener('click', function(event) {
+  event.preventDefault();
+
+  runSearch(viewProductInfo);
+
+});
+
+/*
+  Build a rainforest API product search fetch request based on input parameters
+  as well as a potential inspiration product. The data from this fetch request
+  is passed to the `productViewer` callback after the data has been formatted
 */
-var globalData = {};
-function getSearchQueryURL() {
+function runSearch(productViewer) {
 
   // Below will only run when API use is allowed
-  if (doesUserHaveProductInMind && useAPI && false) {
-    var queryUrl = `${baseProductURL}&url=${getInMindProductUrl()}`;
+  if (doesUserHaveProductInMind() && useAPI) {
+    var queryUrl = buildProductUrl(getInMindProductUrl());
     console.log("User has product in mind: ", queryUrl);
     
     fetch(queryUrl)
@@ -139,61 +159,106 @@ function getSearchQueryURL() {
       }
     })
     .then(function(data) {
+      if (!data.request_info.success) {
+        console.log("Error in runSearch function when attempting to fetch information about the users' product in mind: ");
+        console.log(data.request_info.message);
+      }
       console.log("Data from fetch request of the product in mind:");
       console.log(data);
 
-      var asin = data.product.asin;
-      var queryKeywords = data.product.keywords_list;
-      // Get index -1 in the future because some products have only 1 category
-      var queryCategory = data.product.categories[1].category_id;
+      // Set object containing keywords about the users' product in mind
+      var queryKeywords = new Set();
+
+      // Below nested for loop combines all the keywords parsed from the users'
+      // product in mind as well as any keyword chips they may have provided.
+      // Furthermore, any 1 or 2 character keywords are dropped since they are
+      // more likely to pollute our search result than to helps us find quality
+      // products
+      for (const keywordIterable of [data.product.keywords_list, keywords]) {
+        for (const keyword of keywordIterable) {
+          if (keyword.length < 3) {
+            // Even though the word 'no' is 2 characters long. Having negation
+            // in a keyword *could* be important so we add it to the queryKeywords
+            // set - for now
+            if (keyword !== "no") {
+              continue;
+            }
+          }
+          // Some "boring" words that often appear in keywords are skipped
+          if (["for", "the", "with"].includes(keyword)) {
+            continue;
+          }
+          queryKeywords.add(keyword);
+        }
+      }
+
+      console.log("Keywords associated with this product: ", queryKeywords);
+
+      /* The below switch statement handles extracting the category ID from the
+      response.
+
+      There are three unique circumstances handled here:
+
+        1.) If there is no category associated with the product, we don't
+            attempt to access a category from the categories array and instead
+            attempt to use a category as selected on index.html
+
+        2.) If there is only one category, we use the 0-index of the category
+            array
+        
+        3.) If there is more than one category associated with a product, we use
+            1-index of the category array. This index tends to be the most
+            relevant catgeory associated with a product.
+      */
+      var queryCategory;
+      switch (data.product.categories.length) {
+        case 0:
+          queryCategory = getCategory();
+          break;
+        case 1:
+          queryCategory = data.product.categories[0].category_id;
+          break;
+        default:
+          queryCategory = data.product.categories[1].category_id;
+      }
+
       var isPrime = data.product.buybox_winner.is_prime;
       var price = data.product.buybox_winner.price.value;
-
-      if (!queryCategory) {
-        queryCategory = getCategory();
-      }
 
       if (!isPrime) {
         isPrime = isPrimeDelivery();
       }
 
-      // A search query for a user with an inspired product:
-      globalData.queryURL = buildQueryUrl(queryKeywords, queryCategory);
-
+      // TODO: use set.union for queryKeywords and global keywords
+      productViewer(buildSearchUrl(queryKeywords, queryCategory));
     });
   } else {
-    globalData.queryURL = buildQueryUrl(keywords, getCategory());
+    // This code block runs when the user has no product in mind
+    productViewer(buildSearchUrl(keywords, getCategory()));
   }
 }
-
-// The submit button
-document.getElementById('search-button').addEventListener('click', function(event) {
-  event.preventDefault();
-
-  // Sets our globalData variable's 'queryURL' property
-  getSearchQueryURL();
-  console.log("Query URL: ", globalData.queryURL);
-  viewProductInfo(globalData.queryURL);
-});
-
-
 
 // --------------------------- Niel's code ----------------------------------
 //AMAZON API
 // queryURL -> rainforest API url query for a listing of products
 // asinURL -> url for individual product information
-function viewProductInfo(queryURL) {
+function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
   // SEARCH LISTINGS API
   // USER JOURNEY 1
-  console.log()
   fetch(queryURL)
   .then(function (response) {
     return response.json();
   })
   .then(function (data) {
+    if (!data.request_info.success) {
+      console.log("Received an error when attempting to do a product search: ");
+      console.log(data.request_info.message);
+      return;
+    }
+    console.log("Successfully did a product search! Received data: ", data);
     var resultsArray = [];
 
-    for (var i = 0; i < Math.min(data.search_results.length, 1); i++) {
+    for (var i = 0; i < Math.min(data.search_results.length, maxSearchResults); i++) {
       var result = {
         title: data.search_results[i].title,
         prime_delivery: data.search_results[i].is_prime,
@@ -208,25 +273,25 @@ function viewProductInfo(queryURL) {
 
       resultsArray.push(result);
 
-      // Assuming asinURL is a function that takes an ASIN and returns a URL
-      // var asinURL = getAsinURL(result.asin);
-
-      var asinURL = `${baseProductURL}&url=${result.link}`;
-      console.log("Product url: ", asinURL);
       // Fetching reviews based on the asinURL
-      fetch(asinURL)
+      fetch(productUrlFromAsin(result.asin))
       .then(function (response2) {
         return response2.json();
       })
-      .then(function (data2) {
-        console.log("data2 -> ", data2);
+      .then(function (productData) {
+        if (!productData.request_info.success) {
+          console.log("An error occured when attempting to fetch data about this product: ");
+          console.log(productData.request_info.message)
+          return;
+        }
+        console.log("Data about the found product: ", productData);
 
         var reviewsArray = [];
-        for (var j = 0; j < Math.min(data2.product.top_reviews.length, 5); j++) {
+        for (var j = 0; j < Math.min(productData.product.top_reviews.length, 5); j++) {
           var review = {
-            body: data2.product.top_reviews[j].body,
-            rating: data2.product.top_reviews[j].rating,
-            isGlobal: data2.product.top_reviews[j].is_global_review,
+            body: productData.product.top_reviews[j].body,
+            rating: productData.product.top_reviews[j].rating,
+            isGlobal: productData.product.top_reviews[j].is_global_review,
           };
           reviewsArray.push(review);
         }
@@ -247,11 +312,3 @@ function viewProductInfo(queryURL) {
     console.error(error);
   });
 }
-  
-
-// Placeholder for the logic to generate the URL based on the ASIN
-function getAsinURL(asin) {
-  // Implement the logic to generate the URL based on the ASIN
-  // For example, return a URL like 'https://example.com/reviews?asin=' + asin;
-}
-
