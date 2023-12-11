@@ -5,7 +5,17 @@
 //-------this block has to be deleted before submitting project-----------------//
 //------------------------------------------------------------------------------//
 
-sentimentAnalysis(testReviews);
+// sentimentAnalysis(testReviews);
+
+var testSentimentArray = [
+  "positive",
+  "negative",
+  "positive",
+  "positive",
+  "neutral",
+];
+
+calculateSentiment(testSentimentArray);
 
 //------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------//
@@ -14,7 +24,7 @@ sentimentAnalysis(testReviews);
 var sentimentArray = [];
 
 function sentimentAnalysis(reviewsArray) {
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < reviewsArray.length; i++) {
     const url = "https://twinword-sentiment-analysis.p.rapidapi.com/analyze/";
     const options = {
       method: "POST",
@@ -29,26 +39,44 @@ function sentimentAnalysis(reviewsArray) {
       }),
     };
 
-    postData(url, options);
+    fetchSentimentData(url, options);
   }
 }
 
-function postData(url, options) {
+function fetchSentimentData(url, options) {
   //this function is to create an API request to twinword with the content of the review
   fetch(url, options)
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
-      //   sentimentObject.sentimentResults = data;
       sentiment = data.type;
       getSentimentArray(sentiment);
     });
 }
 
 function getSentimentArray(sentiment) {
-  //this function will save the current sentiment response in an array
+  //this function will save the current sentiment response in an array and call to calculate sentiment score
   sentimentArray.push(sentiment);
   console.log(sentimentArray);
-  return sentimentArray;
+  calculateSentiment(sentimentArray);
+}
+
+function calculateSentiment(array) {
+  //this will calculate a total sentiment. +1 for every positive review, -1 for every negative, 0 for every neutral review
+  var totalSentiment = 0;
+  var sentimentScore = 0;
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] === "positive") {
+      sentimentScore = 1;
+    } else if (array[i] === "negative") {
+      sentimentScore = -1;
+    } else {
+      sentimentScore = 0;
+    }
+
+    totalSentiment = totalSentiment + sentimentScore;
+  }
+  console.log("total sentiment: ", totalSentiment);
+  return totalSentiment;
 }
