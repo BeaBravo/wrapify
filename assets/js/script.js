@@ -261,9 +261,19 @@ function viewSearch(productViewer) {
       // products
       for (const keywordIterable of [data.product.keywords_list, keywords]) {
         for (const keyword of keywordIterable) {
-          if (keyword.length > 2) {
-            queryKeywords.add(keyword);
+          if (keyword.length < 3) {
+            if (keyword !== "no") {
+              continue;
+            }
           }
+          // Some "boring" words that often appear in keywords, 
+          if (["for", "the", "with"].includes(keyword)) {
+            continue;
+          }
+
+
+          queryKeywords.add(keyword);
+
         }
       }
 
