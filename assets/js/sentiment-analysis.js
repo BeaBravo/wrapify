@@ -7,26 +7,8 @@
 //------------------------------------------------------------------------------//
 
 // sentimentAnalysis(testReviews);
+
 // testReviews was defined in test-product-review.js file
-
-var testSentimentArray = [
-  "positive",
-  "negative",
-  "positive",
-  "positive",
-  "neutral",
-];
-
-//testData was defined in test-search.js
-var results = testData.search_results;
-var usersProduct = results[22]; //picked a random product from array
-var topFiveResults = [
-  results[0],
-  results[1],
-  results[2],
-  results[3],
-  results[4],
-];
 
 //------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------//
@@ -34,11 +16,14 @@ var topFiveResults = [
 
 var sentimentArray = [];
 
-var sentiment = await sentimentAnalysis(testReviews);
-console.log(sentiment);
+function sentimentAnalysis(reviewsArray) {
+  //this function will iterate through all the reviews with a time delay of 5 seconds in between the reviews
+  //after it iterates through all, the final rating is calculated and passed to the addPropertytoProduct function
+  //rapidAPI has a rate limit of 2 requests per 10 seconds, hence the time delay
 
-async function sentimentAnalysis(reviewsArray) {
-  for (var i = 0; i < reviewsArray.length; i++) {
+  console.log("request to sentiment API has started!");
+  var i = 0;
+  var requestInterval = setInterval(function () {
     const url = "https://twinword-sentiment-analysis.p.rapidapi.com/analyze/";
     const options = {
       method: "POST",
@@ -52,27 +37,35 @@ async function sentimentAnalysis(reviewsArray) {
         text: reviewsArray[i].body,
       }),
     };
+    console.log("request for review number " + i + 1 + " i = " + i);
 
-    // fetchSentimentData(url, options);
-    var sentiment = await fetchSentimentData(url, options);
-  }
-  return sentiment;
-}
+    var fetchData = fetch(url, options)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        sentiment = data.type;
+        return sentiment;
+      });
+    sentimentArray = getSentimentArray(fetchData);
+    console.log("promise array ", sentimentArray);
 
-async function fetchSentimentData(url, options) {
-  //this function is to create an API request to twinword with the content of the review
-  var sentiment = await fetch(url, options)
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
-      sentiment = data.type;
-      // return sentiment;
-      sentimentArray = getSentimentArray(sentiment);
-      rating = calculateSentiment(sentimentArray);
-      return rating;
-    });
-  return sentiment;
+    i++;
+
+    //when i is equal to the length it will stop the iteration and calculate total
+    //sentiment and call to add property
+
+    if (i === reviewsArray.length) {
+      clearInterval(requestInterval);
+      console.log("interval has stopped at i = ", i);
+      Promise.all(sentimentArray).then(function (array) {
+        console.log(array);
+        var totalRating = calculateSentiment(array);
+        console.log("calculated sentiment rating:", totalRating);
+        return addPropertytoProduct(totalRating);
+      });
+    }
+  }, 5000);
 }
 
 function getSentimentArray(sentiment) {
@@ -102,18 +95,9 @@ function calculateSentiment(array) {
 function addPropertytoProduct(sentimentRating) {
   //the product is stored in a global variable from the Rainforest API product data API
   //grab this object.sentiment_score = sentimentRating;
-  var currentResult = topFiveResults[0]; //<------ this needs to be updated with array ----------->
-  // console.log(currentResult);
-  currentResult.sentiment_score = sentimentRating;
-  console.log(currentResult);
-  return currentResult;
+
+  var currentProduct = {}; //<------ this needs to be updated with array of products----------->
+  currentProduct.sentiment_score = sentimentRating;
+  console.log("product with new property of sentiment_score ", currentProduct);
+  return currentProduct;
 }
-
-//somewhere in here this needs to go back to add a property into the resultsArray element these reviews belong to
-
-//maybe write a function where it waits for sentimentalAnalysis to be done and then it adds the property ?
-//async function asignProperty(reviewsArray) {
-// var sentiment = await sentimentAnalysis(reviewsArray)
-// addPropertyProduct(sentiment)
-// return the new object with new property
-// }
