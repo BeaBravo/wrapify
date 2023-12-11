@@ -371,12 +371,12 @@ function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
         console.error(error);
       });
     }
-    document.location.replace("./results-page.html");
-    displayResults(resultsArray);
-
+    console.log("results inside script.js -> ", resultsArray);
+    localStorage.setItem("results", JSON.stringify(resultsArray));
+    //document.location.replace("./results-page.html");
+  })
     // Now resultsArray contains the desired information for each search result, including reviews
     //console.log(resultsArray);
-  })
   .catch(function (error) {
     console.error(error);
   });

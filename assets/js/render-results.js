@@ -141,5 +141,7 @@ function displayUsersChoice(usersProduct) {
   );
 }
 
-//displayResults(topFiveResults);
+var data = JSON.parse(localStorage.getItem("results"));
+console.log("Data in render-results.js file -> ", data);
+displayResults(data);
 //displayUsersChoice(usersProduct);
