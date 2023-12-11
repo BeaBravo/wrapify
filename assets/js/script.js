@@ -133,7 +133,13 @@ function buildSearchUrl(search_term, category_id) {
 // Given a url to an amazon product, build a query URL to the Rainforest API
 // for the purpose of viewing information about a specific product
 function buildProductUrl(url) {
-  return `${baseProductURL}&url=${url}`
+  return `${baseProductURL}&url=${url}`;
+}
+
+// Get a rainforest query URL for viewing a product's information based on its
+// ASIN number
+function productUrlFromAsin(asin) {
+  return `${baseProductURL}&asin=${asin}`;
 }
 
 /*
@@ -328,25 +334,25 @@ function viewProductInfo(queryURL) {
 
       resultsArray.push(result);
 
-      // Assuming asinURL is a function that takes an ASIN and returns a URL
-      // var asinURL = getAsinURL(result.asin);
-
-      var asinURL = `${baseProductURL}&url=${result.link}`;
-      console.log("Product url: ", asinURL);
       // Fetching reviews based on the asinURL
-      fetch(asinURL)
+      fetch(productUrlFromAsin(result.asin))
       .then(function (response2) {
         return response2.json();
       })
-      .then(function (data2) {
-        console.log("data2 -> ", data2);
+      .then(function (productData) {
+        if (!productData.request_info.success) {
+          console.log("An error occured when attempting to fetch data about this product: ");
+          console.log(productData.request_info.message)
+          return;
+        }
+        console.log("Data about the found product: ", productData);
 
         var reviewsArray = [];
-        for (var j = 0; j < Math.min(data2.product.top_reviews.length, 5); j++) {
+        for (var j = 0; j < Math.min(productData.product.top_reviews.length, 5); j++) {
           var review = {
-            body: data2.product.top_reviews[j].body,
-            rating: data2.product.top_reviews[j].rating,
-            isGlobal: data2.product.top_reviews[j].is_global_review,
+            body: productData.product.top_reviews[j].body,
+            rating: productData.product.top_reviews[j].rating,
+            isGlobal: productData.product.top_reviews[j].is_global_review,
           };
           reviewsArray.push(review);
         }
