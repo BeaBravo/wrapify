@@ -1,5 +1,5 @@
 // CHANGE THIS VARIABLE TO TRUE ONLY WHEN API IS TO BE USED
-const useAPI = true;
+const useAPI = false;
 
 const rainForestApiKey = "D961BC3F959A416CB66BA38ED853CB39";
 
@@ -16,7 +16,7 @@ const [productSelect, categorySelect] = document.querySelectorAll("select");
 const urlPromptEl = document.getElementById("product-url");
 
 // Hide the url prompt upon first start
-toggleUrlInput();
+//toggleUrlInput();
 
 /*
 Returns a boolean (true / false) for whether or not they have a product in mind to use as
@@ -76,12 +76,23 @@ function getCategory() {
 // the user
 var keywords = new Set();
 
+// Reset various parameters on the page so that the user can look for a new product
 function resetPage() {
-  // Remove all keywords from the global keywords set
-  //var chips = document.querySelectorAll(".chips");
-  //var instance = M.Chips.getInstance(chips);
+  // Hide the URL input upon page start / initial load
+  urlPromptEl.parentElement.style.display = "none";
+
+  // Clear any previously input URL's
+  document.getElementById("product-url").value = "";
   
+  // Reset the "Do you have a product in mind?" product select
+  productSelect.selectedIndex = 0;
+
+  // Chips are automatically deleted but the keywords they added to our global
+  // keywords list are not. We manually clear the keywords set instead:
+  keywords.clear();  
 }
+
+resetPage();
 
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize our select menus
@@ -135,10 +146,60 @@ function buildAsinUrl(asin) {
 // The submit button
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
-
+  renderLoader();
   runSearch(viewProductInfo);
-
+  removeLoader();
 });
+
+// Delete the loader and its associated HTML when all fetch requests have been made
+function removeLoader() {
+  // reset the opacity so the screen is no longer blurred
+  document.getElementsByClassName("custom-container")[0].style.opacity = 1;
+
+  // Delete the loader if it is presently on the screen:
+  var loaderEl = document.getElementsByClassName("preloader-wrapper")[0];
+  if (loaderEl) {
+    loaderEl.remove();
+  }
+}
+
+// Render a loader in the center of the input form while fetch requests are being made
+function renderLoader() {
+  var container = document.getElementsByClassName("custom-container")[0];
+  var loaderEl = document.createElement("div");
+  loaderEl.classList.add("preloader-wrapper");
+  loaderEl.classList.add("active");
+  loaderEl.innerHTML = `
+  <div class="spinner-layer spinner-red-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div>
+    <div class="gap-patch">
+      <div class="circle"></div>
+    </div>
+    <div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+  `;
+  /*
+  // The below should be translated to CSS
+
+  container.style.opacity = 0.3; // blur the form container while loading
+  loaderEl.style.position = "absolute";
+  var rect = container.getBoundingClientRect();
+
+  // Place the loader in the middle of the container by
+  // averaging the left and right x coordinates and the top
+  // and bottom y coordinates
+  loaderEl.style.left = `${(rect.right + rect.left) / 2}px`;
+  loaderEl.style.top = `${(rect.bottom + rect.top) / 2}px`;
+  loaderEl.style.zIndex = 1;
+  */
+  
+  container.appendChild(loaderEl);
+
+}
 
 /*
   Build a rainforest API product search fetch request based on input parameters
@@ -178,7 +239,7 @@ function runSearch(productViewer) {
         for (const keyword of keywordIterable) {
           if (keyword.length < 3) {
             // Even though the word 'no' is 2 characters long. Having negation
-            // in a keyword *could* be important so we add it to the queryKeywords
+            // as a keyword *could* be important so we add it to the queryKeywords
             // set - for now
             if (keyword !== "no") {
               continue;
