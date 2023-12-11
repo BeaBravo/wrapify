@@ -134,7 +134,7 @@ function displayUsersChoice(usersProduct) {
   //display
 
   usersChoiceEl.append(
-    '<div class="card row custom-card hoverable"><div class="col m3 l3 xl2 rotate hide-on-small-only">Your pick</div><h5>' +
+    '<div class="card row custom-card hoverable"><div class="col s4 m3 l3 xl2 rotate">Your pick</div><h5>' +
       title +
       '</h5><div class="col s12 m4 l4 responsive-image"><img src=' +
       image +
