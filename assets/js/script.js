@@ -99,24 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-/*
-  Using the parameters provided, create a product listing query for the rainforest
-  API
-*/
-/*
-function buildQueryUrl(keywords, category) {
-  let queryURL = baseListingURL;
-  if (keywords.size) {
-    queryURL += `&search_term=${Array.from(keywords).join('+')}`
-  }
-  var categoryId = getCategory();
-  if (categoryId) {
-    queryURL += `&category_id=${categoryId}`;
-  }
-  console.log("Product listing query URL constructed: ", queryURL);
-  return queryURL; 
-}
-*/
 // Given this functions' parameters, build a query URL to the Rainforest API
 // for the purpose of viewing a search listing of products
 function buildSearchUrl(search_term, category_id) {
@@ -138,103 +120,28 @@ function buildProductUrl(url) {
 
 // Get a rainforest query URL for viewing a product's information based on its
 // ASIN number
-function productUrlFromAsin(asin) {
+function buildAsinUrl(asin) {
   return `${baseProductURL}&amazon_domain=amazon.com&asin=${asin}`;
 }
-
-/*
-  Build a product search query url from the parameters selected by the user.
-  *if* a product url was provided, we use the product category, keywords, etc.
-  from that product as defaults.
-
-  This product search query url is passed to a new fetch request that parses
-  data and performs sentiment analysis (script2.js)
-*/
-// var globalData = {};
-// function getSearchQueryURL() {
-
-//   // Below will only run when API use is allowed
-//   if (doesUserHaveProductInMind() && useAPI) {
-//     var queryUrl = `${baseProductURL}&url=${getInMindProductUrl()}`;
-//     console.log("User has product in mind: ", queryUrl);
-    
-//     fetch(queryUrl)
-//     .then(function(response) {
-//       if (response.ok) {
-//         return response.json();
-//       }
-//     })
-//     .then(function(data) {
-//       console.log("Data from fetch request of the product in mind:");
-//       console.log(data);
-
-//       var asin = data.product.asin;
-//       var queryKeywords = data.product.keywords_list;
-
-//       /* The below switch statement handles extracting the category ID from the
-//       response.
-
-//       There are three unique circumstances handled here:
-
-//         1.) If there is no category associated with the product, we don't
-//             attempt to access a category from the categories array.
-
-//         2.) If there is only one category, we use the 0-index of the category
-//             array
-        
-//         3.) If there is more than one category associated with a product, we use
-//             1-index of the category array. This index tends to be the most
-//             relevant catgeory associated with a product.
-//       */
-//       var queryCategory;
-//       switch (data.product.categories.length) {
-//         case 0:
-//           break;
-//         case 1:
-//           queryCategory = data.product.categories[0].category_id;
-//           break;
-//         default:
-//           queryCategory = data.product.categories[1].category_id;
-//       }
-
-//       var isPrime = data.product.buybox_winner.is_prime;
-//       var price = data.product.buybox_winner.price.value;
-
-//       if (!queryCategory) {
-//         queryCategory = getCategory();
-//       }
-
-//       if (!isPrime) {
-//         isPrime = isPrimeDelivery();
-//       }
-
-//       // A search query for a user with an inspired product:
-//       globalData.queryURL = buildQueryUrl(queryKeywords, queryCategory);
-
-//     });
-//   } else {
-//     globalData.queryURL = buildQueryUrl(keywords, getCategory());
-//   }
-// }
 
 // The submit button
 document.getElementById('search-button').addEventListener('click', function(event) {
   event.preventDefault();
 
-  // Sets our globalData variable's 'queryURL' property
-  //getSearchQueryURL();
-  //runSearch(viewProductInfo);
-  viewSearch(viewProductInfo);
+  runSearch(viewProductInfo);
 
 });
 
-// Restructured version of getSearchQueryURL. Accepts a product viewing function
-// as its argument
-function viewSearch(productViewer) {
+/*
+  Build a rainforest API product search fetch request based on input parameters
+  as well as a potential inspiration product. The data from this fetch request
+  is passed to the `productViewer` callback after the data has been formatted
+*/
+function runSearch(productViewer) {
 
   // Below will only run when API use is allowed
   if (doesUserHaveProductInMind() && useAPI) {
-    var queryUrl = `${baseProductURL}&url=${getInMindProductUrl()}`;
+    var queryUrl = buildProductUrl(getInMindProductUrl());
     console.log("User has product in mind: ", queryUrl);
     
     fetch(queryUrl)
@@ -245,7 +152,7 @@ function viewSearch(productViewer) {
     })
     .then(function(data) {
       if (!data.request_info.success) {
-        console.log("Error in viewSearch function when attempting to fetch information about the users' product in mind: ");
+        console.log("Error in runSearch function when attempting to fetch information about the users' product in mind: ");
         console.log(data.request_info.message);
       }
       console.log("Data from fetch request of the product in mind:");
@@ -327,7 +234,7 @@ function viewSearch(productViewer) {
 //AMAZON API
 // queryURL -> rainforest API url query for a listing of products
 // asinURL -> url for individual product information
-function viewProductInfo(queryURL) {
+function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
   // SEARCH LISTINGS API
   // USER JOURNEY 1
   fetch(queryURL)
@@ -343,7 +250,7 @@ function viewProductInfo(queryURL) {
     console.log("Successfully did a product search! Received data: ", data);
     var resultsArray = [];
 
-    for (var i = 0; i < Math.min(data.search_results.length, 1); i++) {
+    for (var i = 0; i < Math.min(data.search_results.length, maxSearchResults); i++) {
       var result = {
         title: data.search_results[i].title,
         prime_delivery: data.search_results[i].is_prime,
