@@ -16,7 +16,7 @@
 
 var sentimentArray = [];
 
-function sentimentAnalysis(reviewsArray) {
+function sentimentAnalysis(reviewsArray, currentProduct) {
   //this function will iterate through all the reviews with a time delay of 5 seconds in between the reviews
   //after it iterates through all, the final rating is calculated and passed to the addPropertytoProduct function
   //rapidAPI has a rate limit of 2 requests per 10 seconds, hence the time delay
@@ -62,7 +62,7 @@ function sentimentAnalysis(reviewsArray) {
         console.log(array);
         var totalRating = calculateSentiment(array);
         console.log("calculated sentiment rating:", totalRating);
-        return addPropertytoProduct(totalRating);
+        addPropertytoProduct(totalRating, currentProduct);
       });
     }
   }, 5000);
@@ -92,11 +92,10 @@ function calculateSentiment(array) {
   return totalRating;
 }
 
-function addPropertytoProduct(sentimentRating) {
+function addPropertytoProduct(sentimentRating, currentProduct) {
   //the product is stored in a global variable from the Rainforest API product data API
   //grab this object.sentiment_score = sentimentRating;
 
-  var currentProduct = {}; //<------ this needs to be updated with array of products----------->
   currentProduct.sentiment_score = sentimentRating;
   console.log("product with new property of sentiment_score ", currentProduct);
   return currentProduct;
