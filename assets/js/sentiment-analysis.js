@@ -8,6 +8,14 @@
 
 // sentimentAnalysis(testReviews);
 
+var storedResults = JSON.parse(localStorage.getItem("results"));
+console.log(storedResults);
+
+for (var i = 0; i < storedResults.length; i++) {
+  var product = storedResults[i];
+  sentimentAnalysis(product.reviews, product);
+}
+
 // testReviews was defined in test-product-review.js file
 
 //------------------------------------------------------------------------------//
@@ -37,7 +45,7 @@ function sentimentAnalysis(reviewsArray, currentProduct) {
         text: reviewsArray[i].body,
       }),
     };
-    console.log("request for review number " + i + 1 + " i = " + i);
+    console.log("request for review number " + i + " i = " + i);
 
     var fetchData = fetch(url, options)
       .then(function (response) {
@@ -98,5 +106,9 @@ function addPropertytoProduct(sentimentRating, currentProduct) {
 
   currentProduct.sentiment_score = sentimentRating;
   console.log("product with new property of sentiment_score ", currentProduct);
+  localStorage.setItem(
+    "with sentiment score " + currentProduct.asin,
+    JSON.stringify(currentProduct)
+  );
   return currentProduct;
 }

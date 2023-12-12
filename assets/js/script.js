@@ -23,7 +23,7 @@ Returns a boolean (true / false) for whether or not they have a product in mind 
 inspiration. The user is expected to drop a URL into the form below 'paste you url here'
 */
 function doesUserHaveProductInMind() {
-  return (productSelect.options[productSelect.selectedIndex].value === "1");
+  return productSelect.options[productSelect.selectedIndex].value === "1";
 }
 
 // Display the url prompt when the user has selected "yes" they do have a product in mind
@@ -38,9 +38,9 @@ function toggleUrlInput() {
 
 // Hide/display the url prompt whenever the select element for "a product in mind" has been
 // selected
-productSelect.addEventListener("change", function(event) {
+productSelect.addEventListener("change", function (event) {
   toggleUrlInput();
-})
+});
 
 /*
 Returns the url string if the user has selected 'yes' to the do they have a product in mind
@@ -50,7 +50,7 @@ function getInMindProductUrl() {
   return document.getElementById("product-url").value;
 }
 
-// Returns the price range from the slider 
+// Returns the price range from the slider
 function getPriceRange() {
   return document.getElementById("price-range").value;
 }
@@ -83,38 +83,38 @@ function resetPage() {
 
   // Clear any previously input URL's
   document.getElementById("product-url").value = "";
-  
+
   // Reset the "Do you have a product in mind?" product select
   productSelect.selectedIndex = 0;
 
   // Chips are automatically deleted but the keywords they added to our global
   // keywords list are not. We manually clear the keywords set instead:
-  keywords.clear();  
+  keywords.clear();
 }
 
 resetPage();
 
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize our select menus
-  var instances = M.FormSelect.init(document.querySelectorAll('select'), {});
+  var instances = M.FormSelect.init(document.querySelectorAll("select"), {});
 
   var elems = document.querySelectorAll(".chips");
 
   function sanitizeTag(tag) {
-    return tag.replace(/\s/g, '%20').trim().toLowerCase();
+    return tag.replace(/\s/g, "%20").trim().toLowerCase();
   }
 
   var instances = M.Chips.init(elems, {
-    onChipAdd: function(elem, addedChip) {
-      var addedChipTag = addedChip.textContent.replace('close', '');
+    onChipAdd: function (elem, addedChip) {
+      var addedChipTag = addedChip.textContent.replace("close", "");
       console.log("Added a chip tag:", addedChipTag);
       keywords.add(sanitizeTag(addedChipTag));
     },
-    onChipDelete: function(elem, deletedChip) {
-      var deletedChipTag = deletedChip.textContent.replace('close', '');
+    onChipDelete: function (elem, deletedChip) {
+      var deletedChipTag = deletedChip.textContent.replace("close", "");
       console.log(`Deleted a chip tag: ${deletedChipTag}`);
       keywords.delete(sanitizeTag(deletedChipTag));
-    }
+    },
   });
 });
 
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function buildSearchUrl(search_term, category_id) {
   let queryURL = baseListingUrl;
   if (search_term) {
-    queryURL += `&search_term=${Array.from(search_term).join('+')}`;
+    queryURL += `&search_term=${Array.from(search_term).join("+")}`;
   }
   if (category_id) {
     queryURL += `&category_id=${category_id}`;
@@ -144,12 +144,15 @@ function buildAsinUrl(asin) {
 }
 
 // The submit button
-document.getElementById('search-button').addEventListener('click', function(event) {
-  event.preventDefault();
-  //renderLoader();
-  runSearch(viewProductInfo);
-  //removeLoader();
-});
+document
+  .getElementById("search-button")
+  .addEventListener("click", function (event) {
+    event.preventDefault();
+    //renderLoader();
+    console.log("you clicked FIND ME IDEAS button");
+    runSearch(viewProductInfo);
+    //removeLoader();
+  });
 
 // Delete the loader and its associated HTML when all fetch requests have been made
 function removeLoader() {
@@ -196,9 +199,8 @@ function renderLoader() {
   loaderEl.style.top = `${(rect.bottom + rect.top) / 2}px`;
   loaderEl.style.zIndex = 1;
   */
-  
-  container.appendChild(loaderEl);
 
+  container.appendChild(loaderEl);
 }
 
 /*
@@ -207,55 +209,56 @@ function renderLoader() {
   is passed to the `productViewer` callback after the data has been formatted
 */
 function runSearch(productViewer) {
-
   // Below will only run when API use is allowed
   if (doesUserHaveProductInMind() && useAPI) {
     var queryUrl = buildProductUrl(getInMindProductUrl());
     console.log("User has product in mind: ", queryUrl);
-    
+
     fetch(queryUrl)
-    .then(function(response) {
-      if (response.ok) {
-        return response.json();
-      }
-    })
-    .then(function(data) {
-      if (!data.request_info.success) {
-        console.log("Error in runSearch function when attempting to fetch information about the users' product in mind: ");
-        console.log(data.request_info.message);
-      }
-      console.log("Data from fetch request of the product in mind:");
-      console.log(data);
+      .then(function (response) {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then(function (data) {
+        if (!data.request_info.success) {
+          console.log(
+            "Error in runSearch function when attempting to fetch information about the users' product in mind: "
+          );
+          console.log(data.request_info.message);
+        }
+        console.log("Data from fetch request of the product in mind:");
+        console.log(data);
 
-      // Set object containing keywords about the users' product in mind
-      var queryKeywords = new Set();
+        // Set object containing keywords about the users' product in mind
+        var queryKeywords = new Set();
 
-      // Below nested for loop combines all the keywords parsed from the users'
-      // product in mind as well as any keyword chips they may have provided.
-      // Furthermore, any 1 or 2 character keywords are dropped since they are
-      // more likely to pollute our search result than to helps us find quality
-      // products
-      for (const keywordIterable of [data.product.keywords_list, keywords]) {
-        for (const keyword of keywordIterable) {
-          if (keyword.length < 3) {
-            // Even though the word 'no' is 2 characters long. Having negation
-            // as a keyword *could* be important so we add it to the queryKeywords
-            // set - for now
-            if (keyword !== "no") {
+        // Below nested for loop combines all the keywords parsed from the users'
+        // product in mind as well as any keyword chips they may have provided.
+        // Furthermore, any 1 or 2 character keywords are dropped since they are
+        // more likely to pollute our search result than to helps us find quality
+        // products
+        for (const keywordIterable of [data.product.keywords_list, keywords]) {
+          for (const keyword of keywordIterable) {
+            if (keyword.length < 3) {
+              // Even though the word 'no' is 2 characters long. Having negation
+              // as a keyword *could* be important so we add it to the queryKeywords
+              // set - for now
+              if (keyword !== "no") {
+                continue;
+              }
+            }
+            // Some "boring" words that often appear in keywords are skipped
+            if (["for", "the", "with"].includes(keyword)) {
               continue;
             }
+            queryKeywords.add(keyword);
           }
-          // Some "boring" words that often appear in keywords are skipped
-          if (["for", "the", "with"].includes(keyword)) {
-            continue;
-          }
-          queryKeywords.add(keyword);
         }
-      }
 
-      console.log("Keywords associated with this product: ", queryKeywords);
+        console.log("Keywords associated with this product: ", queryKeywords);
 
-      /* The below switch statement handles extracting the category ID from the
+        /* The below switch statement handles extracting the category ID from the
       response.
 
       There are three unique circumstances handled here:
@@ -271,28 +274,28 @@ function runSearch(productViewer) {
             1-index of the category array. This index tends to be the most
             relevant catgeory associated with a product.
       */
-      var queryCategory;
-      switch (data.product.categories.length) {
-        case 0:
-          queryCategory = getCategory();
-          break;
-        case 1:
-          queryCategory = data.product.categories[0].category_id;
-          break;
-        default:
-          queryCategory = data.product.categories[1].category_id;
-      }
+        var queryCategory;
+        switch (data.product.categories.length) {
+          case 0:
+            queryCategory = getCategory();
+            break;
+          case 1:
+            queryCategory = data.product.categories[0].category_id;
+            break;
+          default:
+            queryCategory = data.product.categories[1].category_id;
+        }
 
-      var isPrime = data.product.buybox_winner.is_prime;
-      var price = data.product.buybox_winner.price.value;
+        var isPrime = data.product.buybox_winner.is_prime;
+        var price = data.product.buybox_winner.price.value;
 
-      if (!isPrime) {
-        isPrime = isPrimeDelivery();
-      }
+        if (!isPrime) {
+          isPrime = isPrimeDelivery();
+        }
 
-      // TODO: use set.union for queryKeywords and global keywords
-      productViewer(buildSearchUrl(queryKeywords, queryCategory));
-    });
+        // TODO: use set.union for queryKeywords and global keywords
+        productViewer(buildSearchUrl(queryKeywords, queryCategory));
+      });
   } else {
     // This code block runs when the user has no product in mind
     productViewer(buildSearchUrl(keywords, getCategory()));
@@ -303,81 +306,109 @@ function runSearch(productViewer) {
 //AMAZON API
 // queryURL -> rainforest API url query for a listing of products
 // asinURL -> url for individual product information
-function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
+function viewProductInfo(queryURL, maxSearchResults = 2, maxComments = 5) {
   // SEARCH LISTINGS API
   // USER JOURNEY 1
   fetch(queryURL)
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    if (!data.request_info.success) {
-      console.log("Received an error when attempting to do a product search: ");
-      console.log(data.request_info.message);
-      return;
-    }
-    console.log("Successfully did a product search! Received data: ", data);
-    var resultsArray = [];
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      if (!data.request_info.success) {
+        console.log(
+          "Received an error when attempting to do a product search: "
+        );
+        console.log(data.request_info.message);
+        return;
+      }
+      console.log("Successfully did a product search! Received data: ", data);
+      var resultsArray = [];
 
-    // Use Math.min to make sure we iterate through at MOST 'maxSearchResults' number of products
-    for (var i = 0; i < Math.min(data.search_results.length, maxSearchResults); i++) {
-      var result = {
-        title: data.search_results[i].title,
-        prime_delivery: data.search_results[i].is_prime,
-        asin: data.search_results[i].asin,
-        image: data.search_results[i].image,
-        rating: data.search_results[i].rating,
-        price: data.search_results[i].price.raw,
-        link: data.search_results[i].link,
-        recentSales: data.search_results[i].recent_sales
-      };
+      // Use Math.min to make sure we iterate through at MOST 'maxSearchResults' number of products
+      for (
+        var i = 0;
+        i < Math.min(data.search_results.length, maxSearchResults);
+        i++
+      ) {
+        var result = {
+          title: data.search_results[i].title,
+          prime_delivery: data.search_results[i].is_prime,
+          asin: data.search_results[i].asin,
+          image: data.search_results[i].image,
+          rating: data.search_results[i].rating,
+          price: data.search_results[i].price.raw,
+          link: data.search_results[i].link,
+          recentSales: data.search_results[i].recent_sales,
+        };
 
-      console.log("Found a product: ", result);
+        console.log("Found a product: ", result);
 
-      resultsArray.push(result);
+        // resultsArray.push(result);
 
-      // Fetching reviews based on the asinURL
-      fetch(buildAsinUrl(result.asin))
-      .then(function (response2) {
-        return response2.json();
-      })
-      .then(function (productData) {
-        if (!productData.request_info.success) {
-          console.log("An error occured when attempting to fetch data about this product: ");
-          console.log(productData.request_info.message)
-          return;
-        }
-        console.log("Data about the found product: ", productData);
+        // Fetching reviews based on the asinURL
+        fetch(buildAsinUrl(result.asin))
+          .then(function (response2) {
+            return response2.json();
+          })
+          .then(function (productData) {
+            if (!productData.request_info.success) {
+              console.log(
+                "An error occured when attempting to fetch data about this product: "
+              );
+              console.log(productData.request_info.message);
+              return;
+            }
+            console.log("Data about the found product: ", productData);
 
-        var reviewsArray = [];
-        for (var j = 0; j < Math.min(productData.product.top_reviews.length, maxComments); j++) {
-          var review = {
-            body: productData.product.top_reviews[j].body,
-            rating: productData.product.top_reviews[j].rating,
-            isGlobal: productData.product.top_reviews[j].is_global_review,
-          };
-          reviewsArray.push(review);
-        }
-        console.log("Product reviews: ", reviewsArray);
+            var reviewsArray = [];
+            for (
+              var j = 0;
+              j < Math.min(productData.product.top_reviews.length, maxComments);
+              j++
+            ) {
+              var review = {
+                body: productData.product.top_reviews[j].body,
+                rating: productData.product.top_reviews[j].rating,
+                isGlobal: productData.product.top_reviews[j].is_global_review,
+              };
+              reviewsArray.push(review);
+            }
+            console.log("Product reviews: ", reviewsArray);
 
-        // Associating reviewsArray with the corresponding result
+            // Associating reviewsArray with the corresponding result
 
-        result.reviews = reviewsArray;
-        console.log("result object -> ", result);
-        sentimentAnalysis(result.reviews, result);
-        console.log("sentiment score from inside script.js -> ", result.sentiment_score);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-    }
-    console.log("results inside script.js -> ", resultsArray);
-    localStorage.setItem("results", JSON.stringify(resultsArray));
-    //document.location.replace("./results-page.html");
-  })
+            result.reviews = reviewsArray;
+            console.log("result object -> ", result);
+            resultsArray.push(result);
+            localStorage.setItem("results", JSON.stringify(resultsArray));
+            // sentimentAnalysis(result.reviews, result);
+            // console.log(
+            // "sentiment score from inside script.js -> ",
+            // result.sentiment_score
+            // );
+            return resultsArray;
+          })
+          .then(function (resultsArray) {
+            console.log("results inside script.js -> ", resultsArray);
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+      }
+
+      //document.location.replace("./results-page.html");
+    })
     // Now resultsArray contains the desired information for each search result, including reviews
     //console.log(resultsArray);
-  .catch(function (error) {
-    console.error(error);
-  });
+    .catch(function (error) {
+      console.error(error);
+    });
+
+  //run sentiment analysis after this fetch is done
+
+  var storedResults = JSON.parse(localStorage.getItem("results"));
+  for (var i = 0; i < storedResults.length; i++) {
+    var product = storedResults[i];
+    sentimentAnalysis(product.reviews, product);
+  }
 }

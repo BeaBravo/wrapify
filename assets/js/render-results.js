@@ -2,6 +2,8 @@
 // displayUsersChoice(product), product is an object and the function will display the user's input product
 // displayResults(results), results is an array of objects and the function will display the top results from the query
 
+
+
 var resultEl = $("#results-page");
 var usersChoiceEl = $("#users-choice");
 
