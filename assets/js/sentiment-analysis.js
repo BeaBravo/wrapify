@@ -113,3 +113,38 @@ function addPropertytoProduct(sentimentRating, currentProduct) {
   );
   return currentProduct;
 }
+
+// productData.reviews = array of review objects
+// productData.reviews[i].body = string of review text
+async function getSentiment(productData) {
+  const url = "https://twinword-sentiment-analysis.p.rapidapi.com/analyze/";
+
+  async function getSentimentFromApi(reviewText) {
+    const options = {
+      method: "POST",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        "X-RapidAPI-Key": "5901c52a65msh8bbb26b5dff2e05p11e8f9jsn5ad0d7fa75e8",
+        "X-RapidAPI-Host": "twinword-sentiment-analysis.p.rapidapi.com",
+        "Retry-After": 3, //in case it fails we want to wait three seconds to try again
+      },
+      body: new URLSearchParams({
+        text: reviewText
+      })
+    }
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      return;
+    }
+    const data = await response.json();
+    
+    // sentiment string ['positive', 'negative', 'neutral]
+    return data.type;
+  }
+
+  const sentimentArray = await Promise.all(productData.reviews.map(async function(review) {
+    return await getSentimentFromApi(review.body)
+  }))
+
+  return sentimentArray;
+}

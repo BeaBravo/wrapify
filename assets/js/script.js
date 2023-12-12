@@ -151,10 +151,18 @@ document.getElementById("search-button").addEventListener("click", async functio
     renderLoader();
     console.log("you clicked FIND ME IDEAS button");
 
+    // Array of product objects
     const resultsArray = await productSearch(buildSearchUrl(keywords, getCategory()));
 
+    // Array of product objects with parsed comments attached
+    // const reviewsArray = await sentimentAnalysis
+
+
     const productData = await Promise.all(resultsArray.map(async function(product) {
-      return await queryProduct(product);
+      const productData = await queryProduct(product);
+      const sentimentScores = await getSentiment(productData);
+      Object.assign(productData, sentimentScores);
+      return productData;
     }))
 
     removeLoader();
@@ -229,20 +237,22 @@ async function queryProduct(productData) {
   var productInfo = {
     keywords: data.product.keywords_list,
     categoryId: queryCategory,
-    // FOR NOW ONLY RETURNS TOP REVIEW
-    body: data.product.top_reviews[0].body,
-    rating: data.product.top_reviews[0].rating,
-    isGlobal: data.product.top_reviews[0].is_global_review
-  }
 
+    reviews: []
+  }
+  for (let i=0; i<Math.min(data.product.top_reviews.length, 1); i++) {
+    productInfo.reviews.push({
+      body: data.product.top_reviews[i].body,
+      rating: data.product.top_reviews[i].rating,
+      isGlobal: data.product.top_reviews[i].is_global_review
+    })
+  }
   // Attach all metadata into one object:
   Object.assign(productInfo, productData);
   return productInfo;
 
 }
  
-
-
 function viewProductInfo2(queryURL, maxSearchResults = 1, maxComments = 5) {
   // SEARCH LISTINGS API
   // USER JOURNEY 1
