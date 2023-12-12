@@ -3,28 +3,43 @@
   --text-color: #e2c6c2;
   --border-color: #cb958e;
   --selection-color: #e2bfba;
+  --dark-background: rgb(24, 21, 21);
 }
 
 body {
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial,
     sans-serif;
-  background-color: var(--selection-color);
+  background-color: var(--dark-background);
 }
 
 /* header styling */
 
-.page-header-title {
-  margin-top: 0;
-  margin-left: 2rem;
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   color: rgb(229, 216, 216);
 }
 
 header img {
-  max-width: 17%;
-  border-radius: 50%;
-  /* padding: 0.5rem; */
-  margin: 2rem;
+  max-width: 30vh;
+  border-radius: 25%;
+  margin: 1rem;
+}
+
+.header-title hr {
+  width: 80vh;
+}
+
+header h4,
+header h5 {
+  margin-left: 1rem;
 }
 
 /* custom-container is where the form is shown on the page */
@@ -100,9 +115,24 @@ textarea.materialize-textarea:focus:not([readonly]) {
   border-bottom: 1px solid var(--background-color);
 }
 
-/* save button style */
+/* search button style */
 #search-button {
   background-color: var(--background-color);
+}
+
+/* footer styles */
+#footer {
+  color: white;
+  text-align: center;
+  font-size: larger;
+  font-style: italic;
+}
+
+/* Styles for the preloader circle */
+.preloader-wrapper {
+  position: absolute;
+
+  z-index: 1;
 }
 
 /* -------------------------------------------------------- */
@@ -113,6 +143,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
 #back-to-search {
   font-size: large;
   text-decoration: none;
+  color: var(--selection-color);
 }
 
 .material-icons {
@@ -126,8 +157,15 @@ textarea.materialize-textarea:focus:not([readonly]) {
 .custom-section {
   height: auto;
   padding: 1rem;
-  background-color: var(--background-color);
   margin-top: 1.5rem;
+}
+
+#user-choice {
+  background-color: #92dce5;
+}
+
+#results-page {
+  background-color: var(--border-color);
 }
 
 .custom-card {
@@ -150,6 +188,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
 .responsive-image img {
   width: 100%;
   height: auto;
+  max-height: 100%;
   margin-top: 2rem;
 }
 
@@ -215,6 +254,9 @@ textarea.materialize-textarea:focus:not([readonly]) {
   .custom-container {
     width: 70vh;
   }
+  /* header img {
+    max-width: 130px;
+  } */
 }
 
 @media screen and (max-width: 670px) {
@@ -222,5 +264,19 @@ textarea.materialize-textarea:focus:not([readonly]) {
   .rotate {
     font-size: medium;
     transform: rotate(-45deg) translateX(-35px) translateY(-45px);
+  }
+
+  header img {
+    max-width: 140px;
+  }
+
+  .header-title hr {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .header-title hr {
+    width: 100%;
   }
 }

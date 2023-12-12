@@ -51,6 +51,7 @@ function getInMindProductUrl() {
 }
 
 // Returns the price range from the slider
+// Returns the price range from the slider
 function getPriceRange() {
   return document.getElementById("price-range").value;
 }
@@ -83,6 +84,7 @@ function resetPage() {
 
   // Clear any previously input URL's
   document.getElementById("product-url").value = "";
+
 
   // Reset the "Do you have a product in mind?" product select
   productSelect.selectedIndex = 0;
@@ -146,18 +148,16 @@ function buildAsinUrl(asin) {
 // The submit button
 document.getElementById("search-button").addEventListener("click", async function(event) {
     event.preventDefault();
-    //renderLoader();
+    renderLoader();
     console.log("you clicked FIND ME IDEAS button");
-    // runSearch(viewProductInfo);
-    //removeLoader();
 
-    //await runSearch2();
     const resultsArray = await productSearch(buildSearchUrl(keywords, getCategory()));
 
     const productData = await Promise.all(resultsArray.map(async function(product) {
       return await queryProduct(product);
     }))
 
+    removeLoader();
     localStorage.setItem("results", JSON.stringify(productData));
 
     document.location.replace("./results-page.html");
@@ -386,7 +386,6 @@ function renderLoader() {
     </div>
   </div>
   `;
-  /*
   // The below should be translated to CSS
 
   container.style.opacity = 0.3; // blur the form container while loading
@@ -399,9 +398,9 @@ function renderLoader() {
   loaderEl.style.left = `${(rect.right + rect.left) / 2}px`;
   loaderEl.style.top = `${(rect.bottom + rect.top) / 2}px`;
   loaderEl.style.zIndex = 1;
-  */
-
+  
   container.appendChild(loaderEl);
+
 }
 
 /*
@@ -414,6 +413,7 @@ function runSearch(productViewer) {
   if (doesUserHaveProductInMind() && useAPI) {
     var queryUrl = buildProductUrl(getInMindProductUrl());
     console.log("User has product in mind: ", queryUrl);
+
 
     fetch(queryUrl)
       .then(function (response) {
@@ -457,6 +457,7 @@ function runSearch(productViewer) {
           }
         }
 
+        console.log("Keywords associated with this product: ", queryKeywords);
         console.log("Keywords associated with this product: ", queryKeywords);
 
         /* The below switch statement handles extracting the category ID from the
@@ -508,6 +509,7 @@ function runSearch(productViewer) {
 // queryURL -> rainforest API url query for a listing of products
 // asinURL -> url for individual product information
 function viewProductInfo(queryURL, maxSearchResults = 1, maxComments = 5) {
+function viewProductInfo(queryURL, maxSearchResults = 1, maxComments = 5) {
   // SEARCH LISTINGS API
   // USER JOURNEY 1
   fetch(queryURL)
@@ -525,7 +527,6 @@ function viewProductInfo(queryURL, maxSearchResults = 1, maxComments = 5) {
       console.log("Successfully did a product search! Received data: ", data);
       var resultsArray = [];
 
-      // Use Math.min to make sure we iterate through at MOST 'maxSearchResults' number of products
       for (
         var i = 0;
         i < Math.min(data.search_results.length, maxSearchResults);
@@ -544,30 +545,27 @@ function viewProductInfo(queryURL, maxSearchResults = 1, maxComments = 5) {
 
         console.log("Found a product: ", result);
 
-        // resultsArray.push(result);
+        resultsArray.push(result);
 
-      // Fetching reviews based on the asinURL
-      fetch(buildAsinUrl(result.asin))
-      .then(function (response2) {
-        return response2.json();
-      })
-      .then(function (productData) {
-        if (!productData.request_info.success) {
-          console.log("An error occured when attempting to fetch data about this product: ");
-          console.log(productData.request_info.message)
-          return;
-        }
-        console.log("Data about the found product: ", productData);
-
-        if (!productData.product.top_reviews.length) {
-          console.log("Issue with the found product: No reviews to parse through");
-          productData.product.top_reviews = [];
-        }
+        // Fetching reviews based on the asinURL
+        fetch(productUrlFromAsin(result.asin))
+          .then(function (response2) {
+            return response2.json();
+          })
+          .then(function (productData) {
+            if (!productData.request_info.success) {
+              console.log(
+                "An error occured when attempting to fetch data about this product: "
+              );
+              console.log(productData.request_info.message);
+              return;
+            }
+            console.log("Data about the found product: ", productData);
 
             var reviewsArray = [];
             for (
               var j = 0;
-              j < Math.min(productData.product.top_reviews.length, maxComments);
+              j < Math.min(productData.product.top_reviews.length, 5);
               j++
             ) {
               var review = {
@@ -580,33 +578,21 @@ function viewProductInfo(queryURL, maxSearchResults = 1, maxComments = 5) {
             console.log("Product reviews: ", reviewsArray);
 
             // Associating reviewsArray with the corresponding result
-
             result.reviews = reviewsArray;
-            console.log("result object -> ", result);
-            resultsArray.push(result);
-            localStorage.setItem("results", JSON.stringify(resultsArray));
-            // sentimentAnalysis(result.reviews, result);
-            // console.log(
-            // "sentiment score from inside script.js -> ",
-            // result.sentiment_score
-            // );
-            return resultsArray;
-          })
-          .then(function (resultsArray) {
-            console.log("results inside script.js -> ", resultsArray);
           })
           .catch(function (error) {
             console.error(error);
           });
       }
 
-      //document.location.replace("./results-page.html");
+      // Now resultsArray contains the desired information for each search result, including reviews
+      //console.log(resultsArray);
     })
-    // Now resultsArray contains the desired information for each search result, including reviews
-    //console.log(resultsArray);
     .catch(function (error) {
       console.error(error);
     });
+  }
+}
 
   //run sentiment analysis after this fetch is done
   
@@ -617,4 +603,3 @@ function viewProductInfo(queryURL, maxSearchResults = 1, maxComments = 5) {
     sentimentAnalysis(product.reviews, product);
   }
   */
-}
