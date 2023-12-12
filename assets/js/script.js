@@ -1,7 +1,7 @@
 // CHANGE THIS VARIABLE TO TRUE ONLY WHEN API IS TO BE USED
 const useAPI = false;
 
-const rainForestApiKey = "D961BC3F959A416CB66BA38ED853CB39";
+const rainForestApiKey = "A966699F200B4F01B9EE0D39F67E8D1B";
 
 // The below API endpoint is used for acquiring an amazon search listing of products
 const baseListingUrl = `https://api.rainforestapi.com/request?api_key=${rainForestApiKey}&type=search&amazon_domain=amazon.com`;
@@ -144,15 +144,216 @@ function buildAsinUrl(asin) {
 }
 
 // The submit button
-document
-  .getElementById("search-button")
-  .addEventListener("click", function (event) {
+document.getElementById("search-button").addEventListener("click", async function(event) {
     event.preventDefault();
     //renderLoader();
     console.log("you clicked FIND ME IDEAS button");
-    runSearch(viewProductInfo);
+    // runSearch(viewProductInfo);
     //removeLoader();
-  });
+
+    //await runSearch2();
+    const resultsArray = await productSearch(buildSearchUrl(keywords, getCategory()));
+
+    const productData = await Promise.all(resultsArray.map(async function(product) {
+      return await queryProduct(product);
+    }))
+
+    localStorage.setItem("results", JSON.stringify(productData));
+
+    document.location.replace("./results-page.html");
+});
+
+// asynchronously grab product information and return 
+async function productSearch(searchUrl) {
+  const response = await fetch(searchUrl, {});
+  if (!response.ok) {
+    return;
+  }
+  const data = await response.json();
+  if (!data.request_info.success) {
+    console.log("Received an error when attempting to do a product search: ");
+    console.log(data.request_info.message);
+    return;
+  }
+  console.log("Successfully did a product search! Received data: ", data);
+  var resultsArray = [];
+  for (let i = 0; i < Math.min(data.search_results.length, 3); i++) {
+    var product = data.search_results[i];
+    if (!product.price) {
+      console.log("Error: The below product does not have a price: ", product, );
+      continue;
+    }
+    var result = {
+      title: product.title,
+      is_prime: product.is_prime,
+      asin: product.asin,
+      image: product.image,
+      rating: product.rating,
+      price: product.price.raw,
+      link: product.link,
+      recentSales: product.recent_sales,
+    };
+    resultsArray.push(result);
+    console.log("Found a product: ", result);
+  }
+  return resultsArray;
+}
+
+async function queryProduct(productData) {
+  if (!productData) {
+    console.log("Error: queryProduct function received an invalid product: ", productData);
+    return;
+  }
+
+  const response = await fetch(buildAsinUrl(productData.asin), {});
+  if (!response.ok) {
+    return;
+  }
+  const data = await response.json();
+  if (!data.request_info.success) {
+    console.log("Received an error when attempting to do a product search: ");
+    console.log(data.request_info.message);
+    return;
+  }
+  var queryCategory;
+  switch (data.product.categories.length) {
+    case 0:
+      queryCategory = getCategory();
+      break;
+    case 1:
+      queryCategory = data.product.categories[0].category_id;
+      break;
+    default:
+      queryCategory = data.product.categories[1].category_id;
+  }
+  var productInfo = {
+    keywords: data.product.keywords_list,
+    categoryId: queryCategory,
+    // FOR NOW ONLY RETURNS TOP REVIEW
+    body: data.product.top_reviews[0].body,
+    rating: data.product.top_reviews[0].rating,
+    isGlobal: data.product.top_reviews[0].is_global_review
+  }
+
+  // Attach all metadata into one object:
+  Object.assign(productInfo, productData);
+  return productInfo;
+
+}
+ 
+
+
+function viewProductInfo2(queryURL, maxSearchResults = 1, maxComments = 5) {
+  // SEARCH LISTINGS API
+  // USER JOURNEY 1
+  fetch(queryURL)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      if (!data.request_info.success) {
+        console.log(
+          "Received an error when attempting to do a product search: "
+        );
+        console.log(data.request_info.message);
+        return;
+      }
+      console.log("Successfully did a product search! Received data: ", data);
+      var resultsArray = [];
+
+      // Use Math.min to make sure we iterate through at MOST 'maxSearchResults' number of products
+      for (
+        var i = 0;
+        i < Math.min(data.search_results.length, maxSearchResults);
+        i++
+      ) {
+        var result = {
+          title: data.search_results[i].title,
+          prime_delivery: data.search_results[i].is_prime,
+          asin: data.search_results[i].asin,
+          image: data.search_results[i].image,
+          rating: data.search_results[i].rating,
+          price: data.search_results[i].price.raw,
+          link: data.search_results[i].link,
+          recentSales: data.search_results[i].recent_sales,
+        };
+
+        console.log("Found a product: ", result);
+
+        // resultsArray.push(result);
+
+      // Fetching reviews based on the asinURL
+      fetch(buildAsinUrl(result.asin))
+      .then(function (response2) {
+        return response2.json();
+      })
+      .then(function (productData) {
+        if (!productData.request_info.success) {
+          console.log("An error occured when attempting to fetch data about this product: ");
+          console.log(productData.request_info.message)
+          return;
+        }
+        console.log("Data about the found product: ", productData);
+
+        if (!productData.product.top_reviews.length) {
+          console.log("Issue with the found product: No reviews to parse through");
+          productData.product.top_reviews = [];
+        }
+
+            var reviewsArray = [];
+            for (
+              var j = 0;
+              j < Math.min(productData.product.top_reviews.length, maxComments);
+              j++
+            ) {
+              var review = {
+                body: productData.product.top_reviews[j].body,
+                rating: productData.product.top_reviews[j].rating,
+                isGlobal: productData.product.top_reviews[j].is_global_review,
+              };
+              reviewsArray.push(review);
+            }
+            console.log("Product reviews: ", reviewsArray);
+
+            // Associating reviewsArray with the corresponding result
+
+            result.reviews = reviewsArray;
+            console.log("result object -> ", result);
+            resultsArray.push(result);
+            localStorage.setItem("results", JSON.stringify(resultsArray));
+            // sentimentAnalysis(result.reviews, result);
+            // console.log(
+            // "sentiment score from inside script.js -> ",
+            // result.sentiment_score
+            // );
+            return resultsArray;
+          })
+          .then(function (resultsArray) {
+            console.log("results inside script.js -> ", resultsArray);
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+      }
+
+      //document.location.replace("./results-page.html");
+    })
+    // Now resultsArray contains the desired information for each search result, including reviews
+    //console.log(resultsArray);
+    .catch(function (error) {
+      console.error(error);
+    });
+
+  //run sentiment analysis after this fetch is done
+  
+  /*
+  var storedResults = JSON.parse(localStorage.getItem("results"));
+  for (var i = 0; i < storedResults.length; i++) {
+    var product = storedResults[i];
+    sentimentAnalysis(product.reviews, product);
+  }
+  */
+}
 
 // Delete the loader and its associated HTML when all fetch requests have been made
 function removeLoader() {
@@ -306,7 +507,7 @@ function runSearch(productViewer) {
 //AMAZON API
 // queryURL -> rainforest API url query for a listing of products
 // asinURL -> url for individual product information
-function viewProductInfo(queryURL, maxSearchResults = 2, maxComments = 5) {
+function viewProductInfo(queryURL, maxSearchResults = 1, maxComments = 5) {
   // SEARCH LISTINGS API
   // USER JOURNEY 1
   fetch(queryURL)
@@ -408,10 +609,12 @@ function viewProductInfo(queryURL, maxSearchResults = 2, maxComments = 5) {
     });
 
   //run sentiment analysis after this fetch is done
-
+  
+  /*
   var storedResults = JSON.parse(localStorage.getItem("results"));
   for (var i = 0; i < storedResults.length; i++) {
     var product = storedResults[i];
     sentimentAnalysis(product.reviews, product);
   }
+  */
 }

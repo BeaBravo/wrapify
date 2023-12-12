@@ -14,7 +14,7 @@ function displayResults(results) {
   for (var i = 0; i < results.length; i++) {
     var result = results[i];
     var title = result.title;
-    var price = result.price.raw; //will show the price as a string
+    var price = result.price; //will show the price as a string
     var primeDelivery = isPrime(result.is_prime); //this is a boolean property
     var image = result.image;
     var rating = result.rating; //this is a number
@@ -22,7 +22,8 @@ function displayResults(results) {
     var stars = starsRating("star ", rating);
     var sales = result.recent_sales;
 
-    var sentiment=result.sentiment_score
+    // SET TO 1 FOR NOW
+    var sentiment=1 //result.sentiment_score
     var sentimentDiv = sentimentRender(sentiment, sales);
     //display
 
@@ -143,7 +144,16 @@ function displayUsersChoice(usersProduct) {
   );
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+  var data = JSON.parse(localStorage.getItem("results"));
+  console.log("Data in render-results.js file -> ", data);
+  displayResults(data);
+  //displayUsersChoice(usersProduct);
+});
+
+/*
 var data = JSON.parse(localStorage.getItem("results"));
 console.log("Data in render-results.js file -> ", data);
 displayResults(data);
 //displayUsersChoice(usersProduct);
+*/

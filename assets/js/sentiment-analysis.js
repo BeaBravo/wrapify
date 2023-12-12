@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------//
 
 // sentimentAnalysis(testReviews);
-
+/*
 var storedResults = JSON.parse(localStorage.getItem("results"));
 console.log(storedResults);
 
@@ -15,6 +15,7 @@ for (var i = 0; i < storedResults.length; i++) {
   var product = storedResults[i];
   sentimentAnalysis(product.reviews, product);
 }
+*/
 
 // testReviews was defined in test-product-review.js file
 
