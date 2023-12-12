@@ -3,31 +3,43 @@
   --text-color: #e2c6c2;
   --border-color: #cb958e;
   --selection-color: #e2bfba;
+  --dark-background: rgb(24, 21, 21);
 }
 
 body {
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial,
     sans-serif;
-  background-color: var(--selection-color);
+  background-color: var(--dark-background);
 }
 
 /* header styling */
 
-header {
-  background-color: #9a275a;
+.header {
+  display: flex;
+  align-items: center;
 }
 
-.page-header-title {
-  margin-top: 0;
-  margin-left: 2rem;
+.header-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   color: rgb(229, 216, 216);
 }
 
 header img {
-  max-width: 60%;
+  max-width: 30vh;
   border-radius: 25%;
   margin: 1rem;
+}
+
+.header-title hr {
+  width: 80vh;
+}
+
+header h4,
+header h5 {
+  margin-left: 1rem;
 }
 
 /* custom-container is where the form is shown on the page */
@@ -103,9 +115,17 @@ textarea.materialize-textarea:focus:not([readonly]) {
   border-bottom: 1px solid var(--background-color);
 }
 
-/* save button style */
+/* search button style */
 #search-button {
   background-color: var(--background-color);
+}
+
+/* footer styles */
+#footer {
+  color: white;
+  text-align: center;
+  font-size: larger;
+  font-style: italic;
 }
 
 /* -------------------------------------------------------- */
@@ -218,6 +238,9 @@ textarea.materialize-textarea:focus:not([readonly]) {
   .custom-container {
     width: 70vh;
   }
+  /* header img {
+    max-width: 130px;
+  } */
 }
 
 @media screen and (max-width: 670px) {
@@ -228,8 +251,16 @@ textarea.materialize-textarea:focus:not([readonly]) {
   }
 
   header img {
-    max-width: 17%;
-    border-radius: 25%;
-    margin: 0.5rem;
+    max-width: 140px;
+  }
+
+  .header-title hr {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .header-title hr {
+    width: 100%;
   }
 }
