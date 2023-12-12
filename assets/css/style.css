@@ -110,9 +110,17 @@ textarea.materialize-textarea:focus:not([readonly]) {
 /* ------------------------------------------------------ */
 
 /* back arrow to search page */
-.container a {
+#back-to-search {
   font-size: large;
   text-decoration: none;
+}
+
+.material-icons {
+  vertical-align: text-top;
+}
+
+#back-to-search:hover {
+  cursor: pointer;
 }
 
 .custom-section {
@@ -191,10 +199,10 @@ textarea.materialize-textarea:focus:not([readonly]) {
 
 /* To add the rotated visual indicator for the user's choice */
 .rotate {
-  /* background-color: rgba(105, 174, 197, 1); */
   background-color: #08415c;
   transform: rotate(-45deg) translateX(-50px) translateY(-62px);
   /* color: rgb(22, 121, 158); */
+  /* background-color: rgba(105, 174, 197, 1); */
   color: #92dce5;
   position: absolute;
   font-size: x-large;
@@ -206,5 +214,13 @@ textarea.materialize-textarea:focus:not([readonly]) {
   /* for screens 925px and larger the projects won't take 100% of the section  */
   .custom-container {
     width: 70vh;
+  }
+}
+
+@media screen and (max-width: 670px) {
+  /* the banner for the user's choice will have a smaller font for smaller screens */
+  .rotate {
+    font-size: medium;
+    transform: rotate(-45deg) translateX(-35px) translateY(-45px);
   }
 }

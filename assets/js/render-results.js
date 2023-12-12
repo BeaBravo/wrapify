@@ -2,6 +2,8 @@
 // displayUsersChoice(product), product is an object and the function will display the user's input product
 // displayResults(results), results is an array of objects and the function will display the top results from the query
 
+
+
 var resultEl = $("#results-page");
 var usersChoiceEl = $("#users-choice");
 
@@ -115,7 +117,7 @@ function displayUsersChoice(usersProduct) {
   //display
 
   usersChoiceEl.append(
-    '<div class="card row custom-card hoverable"><div class="col m3 l3 xl2 rotate hide-on-small-only">Your pick</div><h5>' +
+    '<div class="card row custom-card hoverable"><div class="col s4 m3 l3 xl2 rotate">Your pick</div><h5>' +
       title +
       '</h5><div class="col s12 m4 l4 responsive-image"><img src=' +
       image +
