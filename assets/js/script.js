@@ -349,6 +349,11 @@ function viewProductInfo(queryURL, maxSearchResults=1, maxComments=5) {
         }
         console.log("Data about the found product: ", productData);
 
+        if (!productData.product.top_reviews.length) {
+          console.log("Issue with the found product: No reviews to parse through");
+          productData.product.top_reviews = [];
+        }
+
         var reviewsArray = [];
         for (var j = 0; j < Math.min(productData.product.top_reviews.length, maxComments); j++) {
           var review = {
