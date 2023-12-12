@@ -136,6 +136,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
 #back-to-search {
   font-size: large;
   text-decoration: none;
+  color: var(--selection-color);
 }
 
 .material-icons {
@@ -149,8 +150,15 @@ textarea.materialize-textarea:focus:not([readonly]) {
 .custom-section {
   height: auto;
   padding: 1rem;
-  background-color: var(--background-color);
   margin-top: 1.5rem;
+}
+
+#user-choice {
+  background-color: #92dce5;
+}
+
+#results-page {
+  background-color: var(--border-color);
 }
 
 .custom-card {
