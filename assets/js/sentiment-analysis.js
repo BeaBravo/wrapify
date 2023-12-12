@@ -7,6 +7,15 @@
 //------------------------------------------------------------------------------//
 
 // sentimentAnalysis(testReviews);
+/*
+var storedResults = JSON.parse(localStorage.getItem("results"));
+console.log(storedResults);
+
+for (var i = 0; i < storedResults.length; i++) {
+  var product = storedResults[i];
+  sentimentAnalysis(product.reviews, product);
+}
+*/
 
 // testReviews was defined in test-product-review.js file
 
@@ -16,7 +25,7 @@
 
 var sentimentArray = [];
 
-function sentimentAnalysis(reviewsArray) {
+function sentimentAnalysis(reviewsArray, currentProduct) {
   //this function will iterate through all the reviews with a time delay of 5 seconds in between the reviews
   //after it iterates through all, the final rating is calculated and passed to the addPropertytoProduct function
   //rapidAPI has a rate limit of 2 requests per 10 seconds, hence the time delay
@@ -37,7 +46,7 @@ function sentimentAnalysis(reviewsArray) {
         text: reviewsArray[i].body,
       }),
     };
-    console.log("request for review number " + i + 1 + " i = " + i);
+    console.log("request for review number " + i + " i = " + i);
 
     var fetchData = fetch(url, options)
       .then(function (response) {
@@ -62,7 +71,7 @@ function sentimentAnalysis(reviewsArray) {
         console.log(array);
         var totalRating = calculateSentiment(array);
         console.log("calculated sentiment rating:", totalRating);
-        return addPropertytoProduct(totalRating);
+        addPropertytoProduct(totalRating, currentProduct);
       });
     }
   }, 5000);
@@ -92,12 +101,50 @@ function calculateSentiment(array) {
   return totalRating;
 }
 
-function addPropertytoProduct(sentimentRating) {
+function addPropertytoProduct(sentimentRating, currentProduct) {
   //the product is stored in a global variable from the Rainforest API product data API
   //grab this object.sentiment_score = sentimentRating;
 
-  var currentProduct = {}; //<------ this needs to be updated with array of products----------->
   currentProduct.sentiment_score = sentimentRating;
   console.log("product with new property of sentiment_score ", currentProduct);
+  localStorage.setItem(
+    "with sentiment score " + currentProduct.asin,
+    JSON.stringify(currentProduct)
+  );
   return currentProduct;
+}
+
+// productData.reviews = array of review objects
+// productData.reviews[i].body = string of review text
+async function getSentiment(productData) {
+  const url = "https://twinword-sentiment-analysis.p.rapidapi.com/analyze/";
+
+  async function getSentimentFromApi(reviewText) {
+    const options = {
+      method: "POST",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        "X-RapidAPI-Key": "5901c52a65msh8bbb26b5dff2e05p11e8f9jsn5ad0d7fa75e8",
+        "X-RapidAPI-Host": "twinword-sentiment-analysis.p.rapidapi.com",
+        "Retry-After": 3, //in case it fails we want to wait three seconds to try again
+      },
+      body: new URLSearchParams({
+        text: reviewText
+      })
+    }
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      return;
+    }
+    const data = await response.json();
+    
+    // sentiment string ['positive', 'negative', 'neutral]
+    return data.type;
+  }
+
+  const sentimentArray = await Promise.all(productData.reviews.map(async function(review) {
+    return await getSentimentFromApi(review.body)
+  }))
+
+  return sentimentArray;
 }
